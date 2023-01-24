@@ -1,3 +1,3 @@
 First edit to README file!
 Second edit, using Github!
-Conflict made in VSCode. Spooky!
+Conflict settled, both parties happy :)
