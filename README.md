@@ -1,3 +1,27 @@
+# OurQueue
+
+OurQueue is a cross-platform, collaborative music queuing app. Create a queue on the host device and have your friends join and add songs to the queue. Customize your queue's settings by setting queue cooldowns or by letting your friends vote for the next song. Use OurQueue to spice up a long roadtrip or to let guests participate in making your party's soundtrack!
+
+![OurQueue mock](/assets/ourqueue-mock.jpeg)
+
+### Key Features:
+- Create and join a group queue
+- Anyone can add songs to the queue
+- Vote for the next song
+- Cross-platform - supports Spotify and Apple Music
+- View the song history and open them in your streaming service
+
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+
+# Github testing
 First edit to README file!  
 Second edit, using Github!  
 Conflict settled, both parties happy :)  
