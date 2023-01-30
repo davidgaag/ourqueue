@@ -31,3 +31,8 @@ I also gained a needed refresher on commiting, pushing, and pulling. Additionall
 to your git repository, as it will create a copy of that file each time you commit changes, which will use up a lot of space.
 
 Testing remote and local repos are still synced after name change.
+
+# AWS Server info
+Elastic IP: `http://3.140.147.76`  
+ssh command:
+`ssh -i 260-204-key-pair.pem ubuntu@3.140.147.76`
