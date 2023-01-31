@@ -16,10 +16,6 @@ OurQueue is a cross-platform, collaborative music queuing app. Create a queue on
 &nbsp;  
 &nbsp;  
 &nbsp;  
-&nbsp;  
-&nbsp;  
-&nbsp;  
-&nbsp;  
 
 # Github testing
 First edit to README file!  
@@ -32,7 +28,14 @@ to your git repository, as it will create a copy of that file each time you comm
 
 Testing remote and local repos are still synced after name change.
 
+# Interesting Linux Commands
+`traceroute google.com` - See the network path your computer connected through reach the target website  
+`dig google.com` - Get the IP address for a domain  
+`whois google.com` - Get information about a domain name  
+
+
 # AWS Server info
+Domain/URL: [http://dug-cs.link](http://dug-cs.link)  
 Elastic IP: `http://3.140.147.76`  
-ssh command:
+ssh command:   
 `ssh -i 260-204-key-pair.pem ubuntu@3.140.147.76`
