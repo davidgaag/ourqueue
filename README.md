@@ -33,6 +33,20 @@ Testing remote and local repos are still synced after name change.
 `dig google.com` - Get the IP address for a domain  
 `whois google.com` - Get information about a domain name  
 
+# HTML
+`<!DOCTYPE html>` - required at top of document, as well as `<html>` tag to begin HTML file  
+`<input>` - multiple input options, depending on `type` attribute  
+`<button>`
+`<label>` - Label for inputs, use attribute `for` to specify `id` of the intended object  
+`<table>`, with `<tr>` rows, `<td>` table data
+## Tag Structure
+`<html>` - root  
+`<head>` - contains metadata, such those affecting title of webpage, favicon, viewport
+`<body>`, contains:
+- `<header>` - header
+- `<main>` - main content
+- `<footer>` - footer
+
 
 # AWS Server info
 Domain/URL: [http://dug-cs.link](http://dug-cs.link)  
