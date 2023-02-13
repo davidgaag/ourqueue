@@ -12,10 +12,6 @@ OurQueue is a cross-platform, collaborative music queuing app. Create a queue on
 - View the song history and open them in your streaming service
 
 &nbsp;  
-&nbsp;  
-&nbsp;  
-&nbsp;  
-&nbsp;  
 
 # Github testing
 First edit to README file!  
@@ -38,7 +34,9 @@ Testing remote and local repos are still synced after name change.
 `<input>` - multiple input options, depending on `type` attribute  
 `<button>`
 `<label>` - Label for inputs, use attribute `for` to specify `id` of the intended object  
-`<table>`, with `<tr>` rows, `<td>` table data
+`<table>`, with `<tr>` rows, `<td>` table data  
+`class` attribute - use to group content, regardless of location within HTML document  
+`id` attribute - assign unique ID to element
 ## Tag Structure
 `<html>` - root  
 `<head>` - contains metadata, such those affecting title of webpage, favicon, viewport
@@ -47,6 +45,41 @@ Testing remote and local repos are still synced after name change.
 - `<main>` - main content
 - `<footer>` - footer
 
+# CSS
+- CSS info goes in `<head>` tag, either link or using `<style>` tag  
+- Can also put inline, e.g. `<p style="color:green">CSS</p>`  
+
+## Selectors
+- element type selectors  
+- combinators
+    - descendant: `body section` 
+    - child (direct children): `section > p`
+    - general sibling: `p ~ div`
+    - adjacent sibling: `p + div`  
+- class selectors - `.summary`, 
+    - can combine element name and class selectors: `p.summary`
+- ID selectors - `#physics`  
+- attribute selectors 
+    - any element with given attribute: `a[href]`
+    - with attribute and required value: `a[href="./fish.png"]`
+    - wildcard selector (*) - when attribute value contains "https://": `p[href*="https://"]`
+- pseudo selectors
+    - positional relationships
+    - mouse interactions
+    - hyperlink visitation status
+    - attributes
+
+## Declarations
+The actual CSS attributes assigned to elements of a webpage to change their appearance. See [here](https://github.com/webprogramming260/.github/blob/main/profile/css/declarations/declarations.md) for most commonly used declarations.  
+
+## Units
+Absolute (px, in) and realtive (em, ...). See link above for more details.  
+
+## Color
+- keyword
+- RGB hex, optional alpha `#00FFAA22`
+- RGB function `rbg(50%, 255, 128, 0.5)`
+- HSL `hsl(180, 30%, 90%, 0.5)`  
 
 # AWS Server info
 Domain/URL: [http://dug-cs.link](http://dug-cs.link)  
