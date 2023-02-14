@@ -39,7 +39,7 @@ Testing remote and local repos are still synced after name change.
 `id` attribute - assign unique ID to element
 ## Tag Structure
 `<html>` - root  
-`<head>` - contains metadata, such those affecting title of webpage, favicon, viewport
+`<head>` - contains metadata, such those affecting title of webpage, favicon, viewport  
 `<body>`, contains:
 - `<header>` - header
 - `<main>` - main content
@@ -49,7 +49,7 @@ Testing remote and local repos are still synced after name change.
 - CSS info goes in `<head>` tag, either link or using `<style>` tag  
 - Can also put inline, e.g. `<p style="color:green">CSS</p>`  
 
-## Selectors
+## Rule Selectors
 - element type selectors  
 - combinators
     - descendant: `body section` 
