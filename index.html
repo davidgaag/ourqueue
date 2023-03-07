@@ -13,9 +13,9 @@
             integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     </head>
 
-    <body class="bg-light">
+    <body class="bg-dark text-light">
         <header class="container-fluid">
-            <nav class="navbar fixed-top navbar-light">
+            <nav class="navbar fixed-top navbar-dark">
                 <a class="navbar-brand" href="#">OurQueue</a>
                 <menu class="navbar-nav">
                     <li class="nav-item"><a class="nav-link active" href="index.html">Queue</a></li>
@@ -24,14 +24,33 @@
             </nav>
         </header>
 
-        <main class="container-fluid bg-secondary text-center">
+        <main class="container-fluid bg-secondary align-top">
             <div>
-                <h1>Welcome</h1>
-                <p>Login to play</p>
-                <form method="get" action="play.html">
-                    <input type="text" id="player-name" placeholder="Your name here" />
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </form>
+                <h1>Mystery person's Queue</h1>
+                <ol class="list-group list-group-numbered">
+                    <li class="list-group-item d-flex">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Song Title 1</div>
+                            Artist 1
+                        </div>
+                        <span class="badge bg-primary align-self-center">Votes: 3</span>
+                    </li>
+                    <li class="list-group-item d-flex">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Song Title 2</div>
+                            Artist 2
+                        </div>
+                        <span class="badge bg-primary align-self-center">Votes: 3</span>
+                    </li>
+                    <li class="list-group-item d-flex">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Song Title 3</div>
+                            Artist 3
+                        </div>
+                        <span class="badge bg-primary align-self-center">Votes: 3</span>
+                    </li>
+                    
+                </ol>
             </div>
         </main>
 
