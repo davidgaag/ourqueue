@@ -11,6 +11,14 @@ OurQueue is a cross-platform, collaborative music queuing app. Create a queue on
 - Cross-platform - supports Spotify and Apple Music
 - View the song history and open them in your streaming service
 
+### Color Palette
+- <div style="background-color:#E61239; color:black">Primary #E61239</div>
+- <div style="background-color:#FB9DAE; color:black">Secondary #FB9DAE</div>
+- <div style="background-color:#FFFFFF; color:black">Light #FFFFFF</div>
+- <div style="background-color:#474747; color:white">Dark #474747</div>
+
+
+
 &nbsp;  
 
 # Github testing
