@@ -10,10 +10,11 @@ header {
 
 main {
     flex: 1 calc(100vh - 110px);
+    padding-top: 1em;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    justify-content: space-around;
+    justify-content: flex-start;
 }
 
 footer {
