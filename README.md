@@ -109,6 +109,341 @@ Absolute (px, in) and realtive (em, ...). See link above for more details.
 - `grid-template-columns` - specifies grid layout
     - "repeatedly define each column to auto-fill the parent element's width with children that are resized to a minimum of 300 pixels and a maximum of one equal fractional unit (1fr) of the grid width. A fractional unit is dynamically computed by splitting up the parent element's width into equal parts for each of the children."
 - 300px high, 1em gap between grid items 
+
+# JavaScript
+- weakly typed
+- executed using interpreter at runtime, not compiled
+    - pros: portable; cons: allows errors only discovered during execution
+- versions may matter
+- string concat: `"Hello" + " World"`
+- `console.log("string");`
+- `function join(a, b) {...}`
+- `// Line comment`
+- `/* Block comment */`
+
+## JS Console
+- `console.log("Hello %s", "world");`
+- `console.log('%c JavaScript Demo', 'font-size:1.5em; color:green;');` `// OUTPUT: JavaScript Demo //in large green text`
+- Timers
+```js
+console.time('demo time');
+// ... some code that takes a long time.
+console.timeEnd('demo time');
+// OUTPUT: demo time: 9762.74 ms
+```
+- Count - count how many times block of code is called
+```js
+console.count('a');
+// OUTPUT: a: 1
+console.count('a');
+// OUTPUT: a: 2
+console.count('b');
+// OUTPUT: b: 1
+```
+## JavaScript in HTML
+- in `<script>` or in `<head>` reference `<script src="javascript.js"></script>`
+- e.g. `<button onclick="sayHello()">Say Hello</button>`
+## JavaScript Type and Construct
+- Declaring variables 
+    - `let` mutable
+    - `const` immutable
+    - note: `var` deprecated, don't use
+```js
+let x = 1;
+const y = 2;
+```
+### Primitive Types
+
+| Type       | Use                                                                                    | Example                  |
+| ---------- | -------------------------------------------------------------------------------------- | ------------------------ |
+| `Object`   | A collection of properties represented by name value pairs. Values can be of any type. | `{a:3, b:'fish'}`        |
+| `Function` | An object that has the ability to be called.                                           | `function a() {}`        |
+| `Date`     | Calendar dates and times.                                                              | `new Date('1995-12-17')` |
+| `Array`    | An ordered sequence of any type.                                                       | `[3, 'fish']`            |
+| `Map`      | A collection of key value pairs that support efficient lookups.                        | `new Map()`              |
+| `JSON`     | A lightweight data-interchange format used to share information across programs.       | `{"a":3, "b":"fish"}`    |
+
+### Object types
+
+
+| Type       | Use                                                                                    | Example                  |
+| ---------- | -------------------------------------------------------------------------------------- | ------------------------ |
+| `Object`   | A collection of properties represented by name value pairs. Values can be of any type. | `{a:3, b:'fish'}`        |
+| `Function` | An object that has the ability to be called.                                           | `function a() {}`        |
+| `Date`     | Calendar dates and times.                                                              | `new Date('1995-12-17')` |
+| `Array`    | An ordered sequence of any type.                                                       | `[3, 'fish']`            |
+| `Map`      | A collection of key value pairs that support efficient lookups.                        | `new Map()`              |
+| `JSON`     | A lightweight data-interchange format used to share information across programs.       | `{"a":3, "b":"fish"}`    |
+
+### Common operators: `+ - * /` and equality: `===`
+- Strings support concat `+` and equality `===`
+
+### Type conversion
+- weakly typed -> type can change when assigned new value, or types can be auto-converted (see example below)
+```js
+2 + '3';
+// OUTPUT: '23'
+2 * '3';
+// OUTPUT: 6
+[2] + [3];
+// OUTPUT: '23'
+true + null;
+// OUTPUT: 1
+true + undefined;
+// OUTPUT: NaN
+```
+```
+// Equality operator == issues - "falsy" and "truthy"
+1 == '1';
+// OUTPUT: true
+null == undefined;
+// OUTPUT: true
+'' == false;
+// OUTPUT: true
+```
+### Strict equality and inequality operators `===` `!==` skip type conversion
+- (use this, not `==`)
+```js
+1 === '1';
+// OUTPUT: false
+null === undefined;
+// OUTPUT: false
+'' === false;
+// OUTPUT: false
+```
+
+### Conditionals
+    - Ternary operator `?` and `:` -> `if else`
+```js
+if (a === 1) {
+  //...
+} else if (b === 2) {
+  //...
+} else {
+  //...
+}
+```
+```js
+a === 1 ? console.log(1) : console.log('not 1');
+```
+
+### Boolean operators `&& || !`
+## Loops
+
+### for
+
+Note the introduction of the common post increment operation (`i++`) for adding one to a number.
+
+```js
+for (let i = 0; i < 2; i++) {
+  console.log(i);
+}
+// OUTPUT: 0 1
+```
+
+### do while
+
+```js
+let i = 0;
+do {
+  console.log(i);
+  i++;
+} while (i < 2);
+// OUTPUT: 0 1
+```
+
+### while
+
+```js
+let i = 0;
+while (i < 2) {
+  console.log(i);
+  i++;
+}
+// OUTPUT: 0 1
+```
+
+### for in
+
+The `for in` statement iterates over an object's property names.
+
+```js
+const obj = { a: 1, b: 'fish' };
+for (const name in obj) {
+  console.log(name);
+}
+// OUTPUT: a
+// OUTPUT: b
+```
+
+For arrays the object's name is the array index.
+
+```js
+const arr = ['a', 'b'];
+for (const name in arr) {
+  console.log(name);
+}
+// OUTPUT: 0
+// OUTPUT: 1
+```
+
+### for of
+
+The `for of` statement iterates over an iterable's (Array, Map, Set, ...) property values.
+
+```js
+const arr = ['a', 'b'];
+for (const val of arr) {
+  console.log(val);
+}
+// OUTPUT: 'a'
+// OUTPUT: 'b'
+```
+
+### Break and continue
+
+All of the looping constructs demonstrated above allow for either a `break` or `continue` statement to abort or advance the loop.
+
+```js
+let i = 0;
+while (true) {
+  console.log(i);
+  if (i === 0) {
+    i++;
+    continue;
+  } else {
+    break;
+  }
+}
+// OUTPUT: 0 1
+```
+## JS String
+- backtick `\`` around string denotes that it may contain JS code to be evaluated in place and concatenated into the string
+- You can also use backticks to create multiline strings without having to explicitly escape the newline characters using `\n`
+```js
+'quoted text'; // " also works
+const l = 'literal';
+console.log(`string ${l + (1 + 1)} text`);
+// OUTPUT: string literal2 text
+```
+- Unicode support: string is 16-bit unsigned int that represents UTF-16 strings
+### String functions
+
+| Function    | Meaning                                                      |
+| ----------- | ------------------------------------------------------------ |
+| length      | The number of characters in the string                       |
+| indexOf     | The starting index of a given substring                      |
+| split       | Split the string into an array on the given delimiter string |
+| startsWith  | True if the string has a given prefix                        |
+| endsWith    | True if the string has a given suffix                        |
+| toLowerCase | Converts all characters to lowercase                         |
+
+```js
+const s = 'Example:조선글';
+console.log(s.length);
+// OUTPUT: 11
+console.log(s.indexOf('조선글'));
+// OUTPUT: 8
+console.log(s.split(':'));
+// OUTPUT: ['Example', '조선글']
+console.log(s.startsWith('Ex'));
+// OUTPUT: true
+console.log(s.endsWith('조선글'));
+// OUTPUT: true
+console.log(s.toLowerCase());
+// OUTPUT: example:조선글
+```
+
+## Functions
+- functions are objects. can be:
+    - assigned name
+    - passed as parameter
+    - returned as result
+    - referenced from object or array like any other variable
+- return single value
+### Parameters
+- undefined if not provided in call
+- can define default value
+```js
+function labeler(value, title = 'title') {
+  console.log(`${title}=${value}`);
+}
+
+labeler();
+// OUTPUT: title=undefined
+
+labeler('fish');
+// OUTPUT: title=fish
+
+labeler('fish', 'animal');
+// OUTPUT: animal=fish
+```
+
+### Anonymous functions
+Functions in JavaScript are commonly assigned to a variable so that they can be passed as a parameter to some other function or stored as an object property. To easily support this common use you can define a function anonymously and assign it to a variable.
+```js
+// Function that takes a function as a parameter
+function doMath(operation, a, b) {
+  return operation(a, b);
+}
+
+// Anonymous function assigned to a variable
+const add = function (a, b) {
+  return a + b;
+};
+
+console.log(doMath(add, 5, 3));
+// OUTPUT: 8
+
+// Anonymous function assigned to a parameter
+console.log(
+  doMath(
+    function (a, b) {
+      return a - b;
+    },
+    5,
+    3
+  )
+);
+// OUTPUT: 2
+
+
+// Anonymous declaration of the function that is later assigned to a variable
+const add = function (a, b) {
+  return a + b;
+};
+
+// Function that logs as a side effect of its execution
+function labeler(label, value) {
+  console.log(label + '=' + value);
+}
+
+// Function that takes a function as a parameter and then executes the function as a side effect
+function addAndLabel(labeler, label, adder, a, b) {
+  labeler(label, adder(a, b));
+}
+
+// Passing a function to a function
+addAndLabel(labeler, 'a+b', add, 1, 3);
+// OUTPUT: a+b=4
+
+// Function that returns a function
+function labelMaker(label) {
+  return function (value) {
+    console.log(label + '=' + value);
+  };
+}
+
+// Assign a function from the return value of the function
+const nameLabeler = labelMaker('name');
+
+// Calling the returned function
+nameLabeler('value');
+// OUTPUT: name=value
+```
+### Inner Functions
+Functions can be declared inside other functions
+
 # AWS Server info
 Domain/URL: [http://dug-cs.link](http://dug-cs.link)  
 Elastic IP: `http://3.140.147.76`  
