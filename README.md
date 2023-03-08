@@ -444,6 +444,276 @@ nameLabeler('value');
 ### Inner Functions
 Functions can be declared inside other functions
 
+## JS Arrow Function
+Anonymous functions can clutter things up, shorthand: `=>`  
+- cannot be used for constructors or iterator generators
+TFAE:
+```js
+const a = [1, 2, 3, 4];
+
+// standard function syntax
+a.sort(function (v1, v2) {
+  return v1 - v2;
+});
+
+// arrow function syntax
+a.sort((v1, v2) => v1 - v2);
+```
+### Return values
+- `return` keyword optional if no curly braces `{}`
+- if curly braces provided, the arrow function behaves like normal function and needs return
+```js
+() => 3;
+// RETURNS: 3
+
+() => {
+  3;
+};
+// RETURNS: undefined
+
+() => {
+  return 3;
+};
+// RETURNS: 3
+```
+### `this` pointer
+Arrow functions inherit the `this` pointer from scope of where it was created
+- makes what is known as a `closure`
+- Closure allows function to continue referencing its creation scope, even after it has passed out of that scope  
+Example: The function makeClosure returns an anonymous function using the arrow syntax. Notice that the a parameter is overridden, a new b variable is created, and both a and b are referenced in the arrow function. Because of that reference, they are both part of the closure for the returned function.
+```js
+function makeClosure(a) {
+  a = 'a2';
+  const b = 'b2';
+  return () => [a, b];
+}
+```
+Next, we declare the variables a and b at the top level scope, and call makeClosure with a.
+```js
+const a = 'a';
+const b = 'b';
+
+const closure = makeClosure(a);
+```
+Now, when we call closure function it will output the values contained in scope where it was created instead of the current values of the variables.
+```js
+console.log(closure());
+// OUTPUT: ['a2', 'b2']
+
+console.log(a, b);
+// OUTPUT: 'a' 'b'
+```
+Closures provide a valuable property when we do things like execute JavaScript within the scope of an HTML page, because it can remember the values of variables when the function was created instead of what they are when they are executed.
+
+## JS Array
+Functions: 
+
+| Function | Meaning                                                   | Example                       |
+| -------- | --------------------------------------------------------- | ----------------------------- |
+| push     | Add an item to the end of the array                       | `a.push(4)`                   |
+| pop      | Remove an item from the end of the array                  | `x = a.pop`                   |
+| slice    | Return a sub-array                                        | `a.slice(1,-1)`               |
+| sort     | Run a function sort an array in place                     | `a.sort((a,b) => b-a)`        |
+| values   | Creates an iterator for use with a `for of` loop          | `for (i of a.values()) {...}` |
+| find     | Find the first item satisfied by a test function          | `a.find(i => i < 2)`          |
+| forEach  | Run a function on each array item                         | `a.forEach(console.log)`      |
+| reduce   | Run a function to reduce each array item to a single item | `a.reduce((a, c) => a + c)`   |
+| map      | Run a function to map an array to a new array             | `a.map(i => i+i)`             |
+| filter   | Run a function to remove items                            | `a.filter(i => i%2)`          |
+| every    | Run a function to test if all items match                 | `a.every(i => i < 3)`         |
+| some     | Run a function to test if any items match                 | `a.some(i => 1 < 1)`          |
+
+## JS Objects and Classes
+- Object: collection of name value pairs referred to as properties
+    - name must be string or symbol, value any type
+- constructors, `this` pointer, static properties and functions, inheritance
+- create with `new` operator, calls constructor
+```js
+const obj = new Object();
+
+obj.c = [1, 2, 3];
+obj.hello = function () {
+  console.log('hello');
+};
+
+console.log(obj);
+// OUTPUT: {a: 3, b: 'fish', c: [1,2,3], hello: func}
+```
+### object-liteals
+```js
+const obj = {
+  a: 3,
+  b: 'fish',
+};
+```
+### Object functions
+| Function | Meaning |
+| --- | --- |
+| entries | Returns an array of key value pairs |
+| keys | Returns an array of keys |
+| values | Returns an array of values |
+### Constructor
+Any function returning object is considered a constructor and can be evoked with `new` operator
+```js
+function Person(name) {
+  return {
+    name: name,
+  };
+}
+```
+### `this` pointer (more on this later)
+### Classes
+- explicit constructor
+- assumed function declaration
+    - make private functions and variables by prefixing with `#` (references to them must also include `#`)
+```js
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+
+  log() {
+    console.log('My name is ' + this.name);
+  }
+}
+
+const p = new Person('Eich');
+p.log();
+// OUTPUT: My name is Eich
+```
+### Inheritance
+Classes can be extended by using the `extends` keyword to define inheritance. Parameters that need to be passed to the parent class are delivered using the `super` function. Any functions defined on the child that have the same name as the parent override the parent's implementation. A parent's function can be explicitly accessed using the `super` keyword.
+
+const p = new Person('Eich');
+console.log(p);
+// OUTPUT: {name: 'Eich'}
+```js
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+
+  print() {
+    return 'My name is ' + this.name;
+  }
+}
+
+class Employee extends Person {
+  constructor(name, position) {
+    super(name);
+    this.position = position;
+  }
+
+  print() {
+    return super.print() + '. I am a ' + this.position;
+  }
+}
+
+const e = new Employee('Eich', 'programmer');
+console.log(e.print());
+// OUTPUT: My name is Eich. I am a programmer
+```
+
+## JSON
+- Encoded with UTF-8
+Supported data types:
+
+| Type    | Example                 |
+| ------- | ----------------------- |
+| string  | "crockford"             |
+| number  | 42                      |
+| boolean | true                    |
+| array   | [null,42,"crockford"]   |
+| object  | {"a":1,"b":"crockford"} |
+| null    | null                    |
+
+Example:
+```json
+{
+  "class": {
+    "title": "web programming",
+    "description": "Amazing"
+  },
+  "enrollment": ["Marco", "Jana", "فَاطِمَة"],
+  "start": "2025-02-01",
+  "end": null
+}
+```
+You can convert JSON to, and from, JavaScript using the `JSON.parse` and `JSON.stringify` functions.
+Note that in this example, JSON cannot represent the JavaScript `undefined` object and so it gets dropped when converting from JavaScript to JSON.
+```js
+const obj = { a: 2, b: 'crockford', c: undefined };
+const json = JSON.stringify(obj);
+const objFromJson = JSON.parse(json);
+
+console.log(obj, json, objFromJson);
+
+// OUTPUT:
+// {a: 2, b: 'crockford', c: undefined}
+// {"a":2, "b":"crockford"}
+// {a: 2, b: 'crockford'}
+```
+## Regular expressions (Regex)
+```js
+const objRegex = new RegExp('ab*', 'i');
+const literalRegex = /ab*/i;
+```
+- some string functions accept regex, including match, replace, search, split, test
+
+## Rest and Spread
+### Rest
+`...name` on last parameter to group the rest of the parameters
+```js
+function hasNumber(test, ...numbers) {
+  return numbers.some((i) => i === test);
+}
+
+hasNumber(2, 1, 2, 3);
+// RETURNS: true
+```
+### Spread
+Opposite of rest. `...iterable` (array, string, ...), expands the iterable's contents into the parameters
+```js
+function person(firstName, lastName) {
+  return { first: firstName, last: lastName };
+}
+
+const p = person(...['Ryan', 'Dahl']);
+console.log(p);
+// OUTPUT: {first: 'Ryan', last: 'Dahl'}
+```
+## Destructuring Arrays and Objects
+Arrays (note: you can skip elements by just leaving spaces, e.g. `[a, , b, c]` will skip the second element)
+```js
+const a = [1, 2, 4, 5];
+
+// destructure the first two items from a, into the new variables b and c
+const [b, c] = a;
+
+console.log(b, c);
+// OUTPUT: 1, 2
+```
+Objects:
+```js
+const o = { a: 1, b: 'animals', c: ['fish', 'cats'] };
+
+const { a, c } = o;
+
+console.log(a, c);
+// OUTPUT 1, ['fish', 'cats']
+```
+```js
+const o = { a: 1, b: 'animals', c: ['fish', 'cats'] };
+
+const { a, c } = o;
+
+console.log(a, c);
+// OUTPUT 1, ['fish', 'cats']
+```
+
+
+
+
 # AWS Server info
 Domain/URL: [http://dug-cs.link](http://dug-cs.link)  
 Elastic IP: `http://3.140.147.76`  
