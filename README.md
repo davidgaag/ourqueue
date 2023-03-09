@@ -108,6 +108,11 @@ Absolute (px, in) and realtive (em, ...). See link above for more details.
     - "repeatedly define each column to auto-fill the parent element's width with children that are resized to a minimum of 300 pixels and a maximum of one equal fractional unit (1fr) of the grid width. A fractional unit is dynamically computed by splitting up the parent element's width into equal parts for each of the children."
 - 300px high, 1em gap between grid items 
 
+### Startup HTML/CSS Notes
+- `class` is how you access bootstrap CSS styles
+- Not sure yet how to change colors of all bootstrap things
+  - for example, how to change primary color?
+  - `!important` is your friend in overriding bootstrap properties, but this isn't a fix-all
 # JavaScript
 - weakly typed
 - executed using interpreter at runtime, not compiled
@@ -1589,8 +1594,56 @@ coinToss
 ### Observer pattern
 Another way to do asynch processing in JavaScript.
 "Promises are the standard way to do asynchronous processing in JavaScript, but they are not the only way. The Observer pattern, popularized by web programming frameworks such as Angular, use a model called Observer. The major difference between Observers and Promises is that Promises immediately begin to execute when the Promise is created, but Observers form a pipeline that you then pass an execution object into. This allows Observers to be reused, and the result of executing an Observable to be saved as a history of a particular execution."
+## async/await
+**Coin toss with `then`/`catch` chain**
+```js
+coinToss()
+  .then((result) => console.log(`Toss result ${result}`))
+  .catch((err) => console.error(`Error: ${err}`))
+  .finally(() => console.log(`Toss completed`));
+};
+```
+**Coin toss with `async`, `try`/`catch` chain**
+```js
+try {
+  const result = await coinToss();
+  console.log(`Toss result ${result}`);
+} catch (err) {
+  console.error(`Error: ${err}`);
+} finally {
+  console.log(`Toss completed`);
+}
+```
+### async
+- The `async` keyword declares that a function returns a promise.  
+- Must call `await` in top level of the JavaScript *or* in a function with `async` keyword  
 
+Applying `async` makes the return value a promise that's immediately resolved, with value of the return value
+```js
+async function cow() {
+  return 'moo';
+}
+console.log(cow());
+// OUTPUT: Promise {<fulfilled>: 'moo'}
+```
+Explicit promise creation:
+```js
+async function cow() {
+  return new Promise((resolve) => {
+    resolve('moo');
+  });
+}
+console.log(cow());
+// OUTPUT: Promise {<pending>}
+// because the promise's execution function has not yet resolved.
+```
+```js
+console.log(cow());
+// OUTPUT: Promise {<pending>}
 
+console.log(await cow());
+// OUTPUT: moo
+```
 
 # AWS Server info
 Domain/URL: [http://dug-cs.link](http://dug-cs.link)  
