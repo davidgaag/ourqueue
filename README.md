@@ -16,9 +16,13 @@ OurQueue is a cross-platform, collaborative music queuing app. Create a queue on
 - <div style="background-color:#FB9DAE; color:black">Secondary #FB9DAE</div>
 - <div style="background-color:#FFFFFF; color:black">Light #FFFFFF</div>
 - <div style="background-color:#474747; color:white">Dark #474747</div>
-
-&nbsp;  
-
+# AWS Server info
+Domain/URL: [http://dug-cs.link](http://dug-cs.link)  
+Elastic IP: `http://3.140.147.76`  
+ssh command:   
+`ssh -i 260-204-key-pair.pem ubuntu@3.140.147.76`  
+Deploy script: `./deployWebsite.sh  -k ~/keys/production.pem -h subdomain`
+- Made executable by `chmod +x deploy.sh`
 # Github testing
 First edit to README file!  
 Second edit, using Github!  
@@ -30,26 +34,195 @@ to your git repository, as it will create a copy of that file each time you comm
 
 Testing remote and local repos are still synced after name change.
 
+# The Internet, DNS
+The DNS database records that facilitate the mapping of domain names to IP addresses come in several flavors. The main ones we are concerned with are the address (A) and the canonical name (CNAME) records. An A record is a straight mapping from a domain name to IP address. A CNAME record maps one domain name to another domain name. This acts as a domain name alias. You would use a CNAME to do things like map byu.com to the same IP address as byu.edu so that either one could be used.
+
 # Interesting Linux Commands
 `traceroute google.com` - See the network path your computer connected through reach the target website  
 `dig google.com` - Get the IP address for a domain  
-`whois google.com` - Get information about a domain name  
+`whois google.com` - Get information about a domain name 
 
+- **echo** - Output the parameters of the command
+- **cd** - Change directory
+- **mkdir** - Make directory
+- **rmdir** - Remove directory
+- **rm** - Remove file(s)
+- **mv** - Move file(s)
+- **cp** - Copy files
+- **ls** - List files
+- **curl** - Command line client URL browser
+- **grep** - Regular expression search
+- **find** - Find files
+- **top** - View running processes with CPU and memory usage
+- **df** - View disk statistics
+- **cat** - Output the contents of a file
+- **less** - Interactively output the contents of a file
+- **wc** - Count the words in a file
+- **ps** - View the currently running processes
+- **kill** - Kill a currently running process
+- **sudo** - Execute a command as a super user (admin)
+- **ssh** - Create a secure shell on a remote computer
+- **scp** - Securely copy files to a remote computer
+- **history** - Show the history of commands
+- **ping** - Check if a website is up
+- **tracert** - Trace the connections to a website
+- **dig** - Show the DNS information for a domain
+- **man** - Look up a command in the manual
+
+- `|` - Take the output from the command on the left and _pipe_, or pass, it to the command on the right
+- `>` - Redirect output to a file. Overwrites the file if it exists
+- `>>` - Redirect output to a file. Appends if the file exists
+
+- `CTRL-R` - Use type ahead to find previous commands
+- `CTRL-C` - Kill the currently running command
+# Caddy
+`sudo service caddy start`  
+Caddyfile example
+```
+myfunkychickens.click {
+   root * /usr/share/caddy
+   file_server
+   header Cache-Control no-store
+   header -etag
+   header -server
+   }
+
+
+startup.myfunkychickens.click {
+   reverse_proxy * localhost:4000
+   header Cache-Control no-store
+   header -server
+   header -etag
+   header Access-Control-Allow-Origin *
+}
+
+simon.myfunkychickens.click {
+   reverse_proxy * localhost:3000
+   header Cache-Control no-store
+   header -server
+   header -etag
+   header Access-Control-Allow-Origin *
+}
+```
 # HTML
-`<!DOCTYPE html>` - required at top of document, as well as `<html>` tag to begin HTML file  
-`<input>` - multiple input options, depending on `type` attribute  
-`<button>`
-`<label>` - Label for inputs, use attribute `for` to specify `id` of the intended object  
-`<table>`, with `<tr>` rows, `<td>` table data  
-`class` attribute - use to group content, regardless of location within HTML document  
-`id` attribute - assign unique ID to element
+- `<!DOCTYPE html>` - required at top of document, as well as `<html>` tag to begin HTML file  
+- `<input>` - multiple input options, depending on `type` attribute  
+- `<button>`
+- `<label>` - Label for inputs, use attribute `for` to specify `id` of the intended object  
+- `<table>`, with `<tr>` rows, `<td>` table data  
+- `class` attribute - use to group content, regardless of location within HTML document  
+- `id` attribute - assign unique ID to element
+- `<a>` - "anchor", or link, with `href` attribute
+
+Common elements:
+| element   | meaning                                                                |
+| --------- | ---------------------------------------------------------------------- |
+| `html`    | The page container                                                     |
+| `head`    | Header information                                                     |
+| `title`   | Title of the page                                                      |
+| `meta`    | Metadata for the page such as character set or viewport settings       |
+| `script`  | JavaScript reference. Either a external reference, or inline           |
+| `include` | External content reference                                             |
+| `body`    | The entire content body of the page                                    |
+| `header`  | Header of the main content                                             |
+| `footer`  | Footer of the main content                                             |
+| `nav`     | Navigational inputs                                                    |
+| `main`    | Main content of the page                                               |
+| `section` | A section of the main content                                          |
+| `aside`   | Aside content from the main content                                    |
+| `div`     | A block **division** of content                                        |
+| `span`    | An inline span of content                                              |
+| `h<1-9>`  | Text heading. From h1, the highest level, down to h9, the lowest level |
+| `p`       | A paragraph of text                                                    |
+| `b`       | Bring attention                                                        |
+| `table`   | Table                                                                  |
+| `tr`      | Table row                                                              |
+| `th`      | Table header                                                           |
+| `td`      | Table data                                                             |
+| `ol,ul`   | Ordered or unordered list                                              |
+| `li`      | List item                                                              |
+| `a`       | Anchor the text to a hyperlink                                         |
+| `img`     | Graphical image reference                                              |
+| `dialog`  | Interactive component such as a confirmation                           |
+| `form`    | A collection of user input                                             |
+| `input`   | User input field                                                       |
+| `audio`   | Audio content                                                          |
+| `video`   | Video content                                                          |
+| `svg`     | Scalable vector graphic content                                        |
+| `iframe`  | Inline frame of another HTML page                                      |
+
+### Special characters
+| Character | Entity      |
+| --------- | ----------- |
+| &amp;     | `&amp;`     |
+| <         | `&lt;`      |
+| >         | `&gt;`      |
+| "         | `&quot;`    |
+| '         | `&apos;`    |
+| &#128512; | `&#128512;` |
 ## Tag Structure
+- exists: body, header, footer, main, section aside, p, table, ol/ul, div, and span
 `<html>` - root  
 `<head>` - contains metadata, such those affecting title of webpage, favicon, viewport  
 `<body>`, contains:
 - `<header>` - header
 - `<main>` - main content
 - `<footer>` - footer
+
+## User Data Input
+| Element    | Meaning                          | Example                                        |
+| ---------- | -------------------------------- | ---------------------------------------------- |
+| `form`     | Input container and submission   | `<form action="form.html" method="post">`      |
+| `fieldset` | Labeled input grouping           | `<fieldset> ... </fieldset>`                   |
+| `input`    | Multiple types of user input     | `<input type="" />`                            |
+| `select`   | Selection dropdown               | `<select><option>1</option></select>`          |
+| `optgroup` | Grouped selection dropdown       | `<optgroup><option>1</option></optgroup>`      |
+| `option`   | Selection option                 | `<option selected>option2</option>`            |
+| `textarea` | Multiline text input             | `<textarea></textarea>`                        |
+| `label`    | Individual input label           | `<label for="range">Range: </label>`           |
+| `output`   | Output of input                  | `<output for="range">0</output>`               |
+| `meter`    | Display value with a known range | `<meter min="0" max="100" value="50"></meter>` |
+
+### Input Element
+| Type           | Meaning                           |
+| -------------- | --------------------------------- |
+| text           | Single line textual value         |
+| password       | Obscured password                 |
+| email          | Email address                     |
+| tel            | Telephone number                  |
+| url            | URL address                       |
+| number         | Numerical value                   |
+| checkbox       | Inclusive selection               |
+| radio          | Exclusive selection               |
+| range          | Range limited number              |
+| date           | Year, month, day                  |
+| datetime-local | Date and time                     |
+| month          | Year, month                       |
+| week           | Week of year                      |
+| color          | Color                             |
+| file           | Local file                        |
+| submit         | button to trigger form submission |
+
+| Attribute | Meaning                                                                             |
+| --------- | ----------------------------------------------------------------------------------- |
+| name      | The name of the input. This is submitted as the name of the input if used in a form |
+| disabled  | Disables the ability for the user to interact with the input                        |
+| value     | The initial value of the input                                                      |
+| required  | Signifies that a value is required in order to be valid                             |
+
+- `pattern` to specify regex pattern required
+## Internal Media
+- SVG
+- `canvas`
+
+# Simon HTML notes
+- `<div>` and `<span>` difference: `div` for block organization, `span` is inline
+- `ul` vs `ol`- unordered vs. ordered - though can be edited with style, `ul` is generally bulleted, `ol` is numbered
+- `button` can either 
+- `<form>`
+  - `method` attribute, `get` 
+  - `action` attribute is URL of where to go
+  - submit button within triggers 
 
 # CSS
 - CSS info goes in `<head>` tag, either link or using `<style>` tag  
@@ -71,15 +244,65 @@ Testing remote and local repos are still synced after name change.
     - wildcard selector (*) - when attribute value contains "https://": `p[href*="https://"]`
 - pseudo selectors
     - positional relationships
-    - mouse interactions
+    - mouse interactions (e.g. hover)
     - hyperlink visitation status
     - attributes
 
 ## Declarations
-The actual CSS attributes assigned to elements of a webpage to change their appearance. See [here](https://github.com/webprogramming260/.github/blob/main/profile/css/declarations/declarations.md) for most commonly used declarations.  
+The actual CSS attributes assigned to elements of a webpage to change their appearance. 
+
+| Property           | Value                              | Example             | Discussion                                                                     |
+| ------------------ | ---------------------------------- | ------------------- | ------------------------------------------------------------------------------ |
+| background-color   | color                              | `red`               | Fill the background color                                                      |
+| border             | color width style                  | `#fad solid medium` | Sets the border using shorthand where any or all of the values may be provided |
+| border-radius      | unit                               | `50%`               | The size of the border radius                                                  |
+| box-shadow         | x-offset y-offset blu-radius color | `2px 2px 2px gray`  | Creates a shadow                                                               |
+| columns            | number                             | `3`                 | Number of textual columns                                                      |
+| column-rule        | color width style                  | `solid thin black`  | Sets the border used between columns using border shorthand                    |
+| color              | color                              | `rgb(128, 0, 0)`    | Sets the text color                                                            |
+| cursor             | type                               | `grab`              | Sets the cursor to display when hovering over the element                      |
+| display            | type                               | `none`              | Defines how to display the element and its children                            |
+| filter             | filter-function                    | `grayscale(30%)`    | Applies a visual filter                                                        |
+| float              | direction                          | `right`             | Places the element to the left or right in the flow                            |
+| flex               |                                    |                     | Flex layout. Used for responsive design                                        |
+| font               | family size style                  | `Arial 1.2em bold`  | Defines the text font using shorthand                                          |
+| grid               |                                    |                     | Grid layout. Used for responsive design                                        |
+| height             | unit                               | `.25em`             | Sets the height of the box                                                     |
+| margin             | unit                               | `5px 5px 0 0`       | Sets the margin spacing                                                        |
+| max-[width/height] | unit                               | `20%`               | Restricts the width or height to no more than the unit                         |
+| min-[width/height] | unit                               | `10vh`              | Restricts the width or height to no less than the unit                         |
+| opacity            | number                             | `.9`                | Sets how opaque the element is                                                 |
+| overflow           | [visible/hidden/scroll/auto]       | `scroll`            | Defines what happens when the content does not fix in its box                  |
+| position           | [static/relative/absolute/sticky]  | `absolute`          | Defines how the element is positioned in the document                          |
+| padding            | unit                               | `1em 2em`           | Sets the padding spacing (around selected content, not around border or margin)|
+| left               | unit                               | `10rem`             | The horizontal value of a positioned element                                   |
+| text-align         | [start/end/center/justify]         | `end`               | Defines how the text is aligned in the element                                 |
+| top                | unit                               | `50px`              | The vertical value of a positioned element                                     |
+| transform          | transform-function                 | `rotate(0.5turn)`   | Applies a transformation to the element                                        |
+| width              | unit                               | `25vmin`            | Sets the width of the box                                                      |
+| z-index            | number                             | `100`               | Controls the positioning of the element on the z axis                          |
+
+Padding note: outer to inner of CSS box model: margin -> border -> padding -> content
 
 ## Units
-Absolute (px, in) and realtive (em, ...). See link above for more details.  
+Absolute (px, in) and realtive (em, ...).
+| Unit | Description                                                      |
+| ---- | ---------------------------------------------------------------- |
+| px   | The number of pixels                                             |
+| pt   | The number of points (1/72 of an inch)                           |
+| in   | The number of inches                                             |
+| cm   | The number of centimeters                                        |
+| %    | A percentage of the parent element                               |
+| em   | A multiplier of the width of the letter `m` in the parent's font |
+| rem  | A multiplier of the width of the letter `m` in the root's font   |
+| ex   | A multiplier of the height of the element's font                 |
+| vw   | A percentage of the viewport's width                             |
+| vh   | A percentage of the viewport's height                            |
+| vmin | A percentage of the viewport's smaller dimension                 |
+| vmax | A percentage of the viewport's larger dimension                  |
+
+
+
 
 ## Color
 - keyword
@@ -87,8 +310,81 @@ Absolute (px, in) and realtive (em, ...). See link above for more details.
 - RGB function `rbg(50%, 255, 128, 0.5)`
 - HSL `hsl(180, 30%, 90%, 0.5)`  
 
+| Method       | Example                   | Description                                                                                                                                                                                                       |
+| ------------ | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| keyword      | `red`                     | A set of predefined colors (e.g. white, cornflowerblue, darkslateblue)                                                                                                                                            |
+| RGB hex      | `#00FFAA22` or `#0FA2`    | Red, green, and blue as a hexadecimal number, with an optional alpha opacity                                                                                                                                      |
+| RGB function | `rbg(50%, 255, 128, 0.5)` | Red, green, and blue as a percentage or number between 0 and 255, with an optional alpha opacity percentage                                                                                                       |
+| HSL          | `hsl(180, 30%, 90%, 0.5)` | Hue, saturation, and light, with an optional opacity percentage. Hue is the position on the 365 degree color wheel (red is 0 and 255). Saturation is how gray the color is, and light is how bright the color is. |
+
+## Fonts
+```css
+@font-face {
+  font-family: 'Quicksand';
+  src: url('https://cs260.click/fonts/quicksand.woff2');
+}
+
+p {
+  font-family: Quicksand;
+}
+```
+```css
+@import url('https://fonts.googleapis.com/css2?family=Rubik Microbe&display=swap');
+
+p {
+  font-family: 'Rubik Microbe';
+}
+```
 ## Responsive CSS
 - Media queries: `@media (condition) { conditional formatting }` - e.g. `(orientation: portrait)`
+- `display` property
+
+| Value  | Meaning                                                                                                                      |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| none   | Don't display this element. The element still exists, but the browser will not render it.                                    |
+| block  | Display this element with a width that fills its parent element. A `p` or `div` element has block display by default.        |
+| inline | Display this element with a width that is only as big as its content. A `b` or `span` element has inline display by default. |
+| flex   | Display this element's children in a flexible orientation.                                                                   |
+| grid   | Display this element's children in a grid orientation.                                                                       |
+
+Don't scale: `<meta name="viewport" content="width=device-width,initial-scale=1" />`
+
+### Float
+Image float to right of text:
+```css
+aside {
+  float: right;
+  padding: 3em;
+  margin: 0.5em;
+  border: black solid thin;
+}
+```
+
+## Animation using keyframes
+```css
+p {
+  text-align: center;
+  font-size: 20vh;
+
+  animation-name: demo;
+  animation-duration: 3s;
+}
+
+@keyframes demo {
+  from {
+    font-size: 0vh;
+  }
+
+  95% {
+    font-size: 21vh;
+  }
+
+  to {
+    font-size: 20vh;
+  }
+}
+```
+
 ### Flex
 `display: flex;`
 - children: add `flex:` CSS attribute
@@ -108,7 +404,9 @@ Absolute (px, in) and realtive (em, ...). See link above for more details.
     - "repeatedly define each column to auto-fill the parent element's width with children that are resized to a minimum of 300 pixels and a maximum of one equal fractional unit (1fr) of the grid width. A fractional unit is dynamically computed by splitting up the parent element's width into equal parts for each of the children."
 - 300px high, 1em gap between grid items 
 
-### Startup HTML/CSS Notes
+# Simon CSS Notes
+
+# Startup HTML/CSS Notes
 - `class` is how you access bootstrap CSS styles
 - Not sure yet how to change colors of all bootstrap things
   - for example, how to change primary color?
@@ -530,6 +828,7 @@ Functions:
 ## JS Objects and Classes
 - Object: collection of name value pairs referred to as properties
     - name must be string or symbol, value any type
+    - Example: `const car = {type:"Fiat", model:"500", color:"white"};`
 - constructors, `this` pointer, static properties and functions, inheritance
 - create with `new` operator, calls constructor
 ```js
@@ -663,6 +962,54 @@ const objRegex = new RegExp('ab*', 'i');
 const literalRegex = /ab*/i;
 ```
 - some string functions accept regex, including match, replace, search, split, test
+ 
+**Flags after regex, e.g. `/.../gi`**
+<table>
+  <thead>
+    <tr>
+      <th>Flag</th>
+      <th>Description</th>
+      <th>Corresponding property</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>d</code></td>
+      <td>Generate indices for substring matches.</td>
+      <td><a href="/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/hasIndices"><code>hasIndices</code></a></td>
+    </tr>
+    <tr>
+      <td><code>g</code></td>
+      <td>Global search.</td>
+      <td><a href="/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/global"><code>global</code></a></td>
+    </tr>
+    <tr>
+      <td><code>i</code></td>
+      <td>Case-insensitive search.</td>
+      <td><a href="/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/ignoreCase"><code>ignoreCase</code></a></td>
+    </tr>
+    <tr>
+      <td><code>m</code></td>
+      <td>Allows <code>^</code> and <code>$</code> to match newline characters.</td>
+      <td><a href="/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/multiline"><code>multiline</code></a></td>
+    </tr>
+    <tr>
+      <td><code>s</code></td>
+      <td>Allows <code>.</code> to match newline characters.</td>
+      <td><a href="/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/dotAll"><code>dotAll</code></a></td>
+    </tr>
+    <tr>
+      <td><code>u</code></td>
+      <td>"Unicode"; treat a pattern as a sequence of Unicode code points.</td>
+      <td><a href="/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/unicode"><code>unicode</code></a></td>
+    </tr>
+    <tr>
+      <td><code>y</code></td>
+      <td>Perform a "sticky" search that matches starting at the current position in the target string.</td>
+      <td><a href="/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/sticky"><code>sticky</code></a></td>
+    </tr>
+  </tbody>
+</table>
 
 ## Rest and Spread
 ### Rest
@@ -1644,9 +1991,6 @@ console.log(cow());
 console.log(await cow());
 // OUTPUT: moo
 ```
-
-# AWS Server info
-Domain/URL: [http://dug-cs.link](http://dug-cs.link)  
-Elastic IP: `http://3.140.147.76`  
-ssh command:   
-`ssh -i 260-204-key-pair.pem ubuntu@3.140.147.76`
+## Debugging
+- `console.log` statements
+- browser debugging - breakpoints, stepping
