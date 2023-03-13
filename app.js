@@ -24,16 +24,21 @@ class Queue {
     addSongToQueue(songTitle, artistName) {
         const newSongListEl = document.createElement("li");
         newSongListEl.setAttribute("class", "list-group-item d-flex");
+
         const newSongDiv = document.createElement("div");
         newSongDiv.setAttribute("class", "ms-2 me-auto");
-        newSongDiv.textContent = artistName;
+
         const songTitleDiv = document.createElement("div");
         songTitleDiv.setAttribute("class", "fw-bold");
         songTitleDiv.textContent = songTitle;
 
-        newSongListEl.appendChild(newSongDiv);
-        newSongDiv.appendChild(songTitleDiv);
+        const artistNameDiv = document.createElement("div");
+        artistNameDiv.textContent = artistName;
 
+        newSongDiv.appendChild(songTitleDiv);
+        newSongDiv.appendChild(artistNameDiv);
+        newSongListEl.appendChild(newSongDiv);
+    
         const listElement = document.getElementById("queue-list");
         listElement.appendChild(newSongListEl);
 

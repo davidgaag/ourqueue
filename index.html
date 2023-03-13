@@ -32,6 +32,13 @@
             </div>
             <div>
                 <ol id="queue-list" class="list-group list-group-numbered">
+                    <li class="list-group-item d-flex">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Song Title 1</div>
+                            <div>Artist name 1</div>
+                        </div>
+                        <span class="badge bg-primary align-self-center">Votes: 3</span>
+                    </li>
                 </ol>
             </div>
             <div id="song-information-container">
@@ -40,7 +47,8 @@
                         <input id="song-title" type="text" class="form-text w-25" placeholder="Song title" required>
                         <input id="artist-name" type="text" class="form-text w-25" placeholder="Artist name">
                     </div>
-                    <button type="button" class="btn btn-primary mt-3" onclick="queue.addSong()">Add song to queue</button>
+                    <button type="button" class="btn btn-primary mt-3" onclick="queue.addSong()">Add song to
+                        queue</button>
                 </form>
             </div>
 
