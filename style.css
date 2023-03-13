@@ -19,6 +19,7 @@ main {
 
 #song-information-container {
     flex: 1;
+    padding-top: 1em;
     display: flex;
     flex-direction: column;
     align-items: stretch;

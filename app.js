@@ -22,6 +22,7 @@ class Queue {
     }
 
     addSongToQueue(songTitle, artistName) {
+        // Song title and artist
         const newSongListEl = document.createElement("li");
         newSongListEl.setAttribute("class", "list-group-item d-flex");
 
@@ -35,26 +36,29 @@ class Queue {
         const artistNameDiv = document.createElement("div");
         artistNameDiv.textContent = artistName;
 
+        // Voting div
+        const votingDiv = document.createElement("div");
+        votingDiv.setAttribute("class", "align-self-center");
+
+        const voteCheckbox = document.createElement("input");
+        voteCheckbox.setAttribute("type", "checkbox");
+
         const votesBadgeSpan = document.createElement("span");
-        votesBadgeSpan.setAttribute("class", "badge bg-primary align-self-center");
+        votesBadgeSpan.setAttribute("class", "badge bg-primary");
         votesBadgeSpan.textContent = "Votes: 1";
 
+        // Append children
         newSongDiv.appendChild(songTitleDiv);
         newSongDiv.appendChild(artistNameDiv);
+
+        votingDiv.appendChild(voteCheckbox);
+        votingDiv.appendChild(votesBadgeSpan);
+
         newSongListEl.appendChild(newSongDiv);
-        newSongListEl.appendChild(votesBadgeSpan);
+        newSongListEl.appendChild(votingDiv);
     
         const listElement = document.getElementById("queue-list");
         listElement.appendChild(newSongListEl);
-
-        
-        /* <li class="list-group-item d-flex">
-                    <div class="ms-2 me-auto">
-                        <div class="fw-bold">Song Title 1</div>
-                        Artist 1
-                    </div>
-                    <span class="badge bg-primary align-self-center">Votes: 3</span>
-                </li> */
     }
 }
 
