@@ -16,6 +16,11 @@ OurQueue is a cross-platform, collaborative music queuing app. Create a queue on
 - <div style="background-color:#FB9DAE; color:black">Secondary #FB9DAE</div>
 - <div style="background-color:#FFFFFF; color:black">Light #FFFFFF</div>
 - <div style="background-color:#474747; color:white">Dark #474747</div>
+
+### TODO
+- fix header background color not moving with the nav element
+- improve UI
+- get song data from database using APIs
 # AWS Server info
 Domain/URL: [http://dug-cs.link](http://dug-cs.link)  
 Elastic IP: `http://3.140.147.76`  
