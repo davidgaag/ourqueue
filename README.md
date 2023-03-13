@@ -18,8 +18,12 @@ OurQueue is a cross-platform, collaborative music queuing app. Create a queue on
 - <div style="background-color:#474747; color:white">Dark #474747</div>
 
 ### TODO
+- voting changes Votes badge
+- order queue based on votes (ask professor/TAs). This potentially affects:
+  -  `addSongToQueue` - change to `displayAllSongs`?
+  - 
 - fix header background color not moving with the nav element
-- enter button submits song
+- pressing enter button on keyboard submits song
 - add "who voted for this" instead of number badge
 - improve UI
 - get song data from database using APIs

@@ -1,6 +1,15 @@
+function Song(songTitle, artistName, numVotes = 1) {
+    return {
+        songTitle: songTitle,
+        artistName: artistName,
+        numVotes: numVotes,
+    };
+}
 class Queue {
     constructor() {
         this.queueListEl = document.getElementById("queue-list");
+        this.songs = new Map();
+        this.nextSongNumber = 1;
     }
 
     addSong() {
@@ -15,16 +24,21 @@ class Queue {
             songTitleEl.value = "";
             artistNameEl.value = "";
 
-            this.addSongToQueue(songTitle, artistName);
+            const newSongId = "song" + this.nextSongNumber;
+            // Obselete now, but in future, reorder list based on number of votes
+            this.songs.set(newSongId, new Song(songTitle, artistName));
+            this.nextSongNumber++;
+            this.addSongToQueue(songTitle, artistName, id)
             document.getElementById("queue-empty-info").style.display="none";
-
         }
     }
 
-    addSongToQueue(songTitle, artistName) {
+    addSongToQueue(songTitle, artistName, id) {
         // Song title and artist
         const newSongListEl = document.createElement("li");
         newSongListEl.setAttribute("class", "list-group-item d-flex");
+        newSongListEl.id = id;
+
 
         const newSongDiv = document.createElement("div");
         newSongDiv.setAttribute("class", "ms-2 me-auto");
