@@ -35,9 +35,14 @@ class Queue {
         const artistNameDiv = document.createElement("div");
         artistNameDiv.textContent = artistName;
 
+        const votesBadgeSpan = document.createElement("span");
+        votesBadgeSpan.setAttribute("class", "badge bg-primary align-self-center");
+        votesBadgeSpan.textContent = "Votes: 1";
+
         newSongDiv.appendChild(songTitleDiv);
         newSongDiv.appendChild(artistNameDiv);
         newSongListEl.appendChild(newSongDiv);
+        newSongListEl.appendChild(votesBadgeSpan);
     
         const listElement = document.getElementById("queue-list");
         listElement.appendChild(newSongListEl);

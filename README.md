@@ -20,6 +20,7 @@ OurQueue is a cross-platform, collaborative music queuing app. Create a queue on
 ### TODO
 - fix header background color not moving with the nav element
 - improve UI
+- add "who voted for this" instead of number badge
 - get song data from database using APIs
 # AWS Server info
 Domain/URL: [http://dug-cs.link](http://dug-cs.link)  
