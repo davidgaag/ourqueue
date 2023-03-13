@@ -26,6 +26,25 @@
 
         <main class="container-fluid bg-secondary">
             <div>
+                <h1>My Queue</h1>
+                <p id="queue-empty-info" class="p-1 fs-5">Fill the form below and click the button to add a song!</p>
+            </div>
+            <div>
+                <ol id="queue-list" class="list-group list-group-numbered">
+                </ol>
+            </div>
+            <div id="song-information-container">
+                <form class="text-center">
+                    <div>
+                        <input id="song-title" type="text" class="form-text w-25" placeholder="Song title" required>
+                        <input id="artist-name" type="text" class="form-text w-25" placeholder="Artist name">
+                    </div>
+                    <button type="button" class="btn btn-primary mt-3" onclick="queue.addSong()">Add song to queue</button>
+                </form>
+            </div>
+
+            <!-- Old Main 
+            <div>
                 <h1>Mystery person's Queue</h1>
                 <ol class="list-group list-group-numbered">
                     <li class="list-group-item d-flex">
@@ -52,6 +71,27 @@
 
                 </ol>
             </div>
+
+        -->
+
+            <!-- Bootstrap modal which has a dependency on a bootstrap javascript file, so I'm commenting it out
+        <div class="modal fade" id="add-song-modal" tabindex="-1" >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Add song</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dimiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="addSong()">Add song</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    -->
         </main>
 
         <footer class="bg-dark text-secondary">
