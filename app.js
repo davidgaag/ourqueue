@@ -28,7 +28,7 @@ class Queue {
             // Obselete now, but in future, reorder list based on number of votes
             this.songs.set(newSongId, new Song(songTitle, artistName));
             this.nextSongNumber++;
-            this.addSongToQueue(songTitle, artistName, id)
+            this.addSongToQueue(songTitle, artistName, newSongId)
             document.getElementById("queue-empty-info").style.display="none";
         }
     }
