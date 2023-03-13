@@ -1994,3 +1994,11 @@ console.log(await cow());
 ## Debugging
 - `console.log` statements
 - browser debugging - breakpoints, stepping
+
+# Simon JavaScript Notes
+- `localStorage.setItem("key", foo.value);` sets variable in browser's local storage cache
+- `localStorage.getItem('scores');` get from local storage cache
+  - may need to parse JSON using `JSON.parse(scoresText);`
+- `document.createElement('td');` makes element to be stored in a variable
+  - `roeEl.appendChild(nameTdEl);` to add children, then `tableBodyEl.appendChild(rowEl);` to add to DOM (`tableBodyEl` was selected using `document.querySelector`)
+- `window.location.href = "play.html"` change page
