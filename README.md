@@ -2013,3 +2013,176 @@ console.log(await cow());
 - `document.createElement('td');` makes element to be stored in a variable
   - `roeEl.appendChild(nameTdEl);` to add children, then `tableBodyEl.appendChild(rowEl);` to add to DOM (`tableBodyEl` was selected using `document.querySelector`)
 - `window.location.href = "play.html"` change page
+
+# Web Services
+## URL - Unifiorm Resource Locator
+`<scheme>://<domain name>:<port>/<path>?<parameters>#<anchor>`
+- URN (Uniform Resource Name) doesn't specify location information 
+- URI (Uniform Resource Identifier): general, refers to either URN or URL
+
+| Part        | Example                              | Meaning                                                                                                                                                                                                                                                                             |
+| ----------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scheme      | https                                | The protocol required to ask for the resource. For web applications, this is usually HTTPS. But it could be any internet protocol such as FTP or MAILTO.                                                                                                                            |
+| Domain name | byu.edu                              | The domain name that owns the resource represented by the URL.                                                                                                                                                                                                                      |
+| Port        | 3000                                 | The port specifies the numbered network port used to connect to the domain server. Lower number ports are reserved for common internet protocols, higher number ports can be used for any purpose. The default port is 80 if the scheme is HTTP, or 443 if the scheme is HTTPS.     |
+| Path        | /school/byu/user/8014                | The path to the resource on the domain. The resource does not have to physically be located on the file system with this path. It can be a logical path representing endpoint parameters, a database table, or an object schema.                                                    |
+| Parameters  | filter=names&highlight=intro,summary | The parameters represent a list of key value pairs. Usually it provides additional qualifiers on the resource represented by the path. This might be a filter on the returned resource or how to highlight the resource. The parameters are also sometimes called the query string. |
+| Anchor      | summary                              | The anchor usually represents an sub-location in the resource. For HTML pages this represents a request for the browser to automatically scroll to the element with an ID that matches the anchor. The anchor is also sometimes called the hash, or fragment ID.                    |
+
+## Ports
+- Allow device to supoort multiple protocols (e.g. HTTP, HTTPS, FTP, SSH) as well as different types of services (e.g. search, document, authentication)
+- can be externally exposed or only internally used
+- IANA defines standard usage for port numbers
+  - 0 - 1023 for standard protocols
+  - 1024 - 49151 assigned to requesting entities
+  - 49152  - 65535 dynamic, used to create dynamic connections to a device
+
+Common Ports:
+| Port | Protocol                                                                                           |
+| ---- | -------------------------------------------------------------------------------------------------- |
+| 20   | File Transfer Protocol (FTP) for data transfer                                                     |
+| 22   | Secure Shell (SSH) for connecting to remote devices                                                |
+| 25   | Simple Mail Transfer Protocol (SMTP) for sending email                                             |
+| 53   | Domain Name System (DNS) for looking up IP addresses                                               |
+| 80   | Hypertext Transfer Protocol (HTTP) for web requests                                                |
+| 110  | Post Office Protocol (POP3) for retrieving email                                                   |
+| 123  | Network Time Protocol (NTP) for managing time                                                      |
+| 161  | Simple Network Management Protocol (SNMP) for managing network devices such as routers or printers |
+| 194  | Internet Relay Chat (IRC) for chatting                                                             |
+| 443  | HTTP Secure (HTTPS) for secure web requests                                                        |
+
+- on my server: 
+  - port 22 open for SSH
+  - 443 for HTTPS
+  - 80 for HTTP
+  - Caddy listening on ports 80 and 443 (redirects 80 to 443)
+    - if URL path matches static file, reads off disk and returns it
+    - if HTTP path matches one of definitions it has for gateway service, it makes connection on that service's port (3000 for simon, 4000 for startup)
+
+## HTTP
+Requests and Responses
+- `curl -v -s <URL>` helps us see this in action
+### Request
+Syntax:
+```
+<verb> <url path, parameters, anchor> <version>
+[<header key: value>]*
+[
+
+  <body>
+]
+```
+- `verb` - `GET`, ...
+- Header examples
+  - `Host:` requested host (i.e. domain name)
+  - `Accept:` what type of resources client will accept (always MIME type)
+### Response
+```
+<version> <status code> <status string>
+[<header key: value>]*
+[
+
+  <body>
+]
+```
+### Verbs
+| Verb    | Meaning                                                                                                                                                                                                                                                  |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET     | Get the requested resource. This can represent a request to get a single resource or a resource representing a list of resources.                                                                                                                        |
+| POST    | Create a new resource. The body of the request contains the resource. The response should include a unique ID of the newly created resource.                                                                                                             |
+| PUT     | Update a resource. Either the URL path, HTTP header, or body must contain the unique ID of the resource being updated. The body of the request should contain the updated resource. The body of the response may contain the resulting updated resource. |
+| DELETE  | Delete a resource. Either the URL path or HTTP header must contain the unique ID of the resource to delete.                                                                                                                                              |
+| OPTIONS | Get metadata about a resource. Usually only HTTP headers are returned. The resource itself is not returned.                                                                                                                                              |
+### Status Codes
+- 1xx informational
+- 2xx success
+- 3xx redirect to other location, or that the previously cached resource is still valid
+- 4xx client error - invalid request
+- 5xx server error
+
+| Code | Text                                                                                 | Meaning                                                                                                                           |
+| ---- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| 100  | Continue                                                                             | The service is working on the request                                                                                             |
+| 200  | Success                                                                              | The requested resource was found and returned as appropriate.                                                                     |
+| 201  | Created                                                                              | The request was successful and a new resource was created.                                                                        |
+| 204  | No Content                                                                           | The request was successful but no resource is returned.                                                                           |
+| 304  | Not Modified                                                                         | The cached version of the resource is still valid.                                                                                |
+| 307  | Permanent redirect                                                                   | The resource is no longer at the requested location. The new location is specified in the response location header.               |
+| 308  | Temporary redirect                                                                   | The resource is temporarily located at a different location. The temporary location is specified in the response location header. |
+| 400  | Bad request                                                                          | The request was malformed or invalid.                                                                                             |
+| 401  | Unauthorized                                                                         | The request did not provide a valid authentication token.                                                                         |
+| 403  | Forbidden                                                                            | The provided authentication token is not authorized for the resource.                                                             |
+| 404  | Not found                                                                            | An unknown resource was requested.                                                                                                |
+| 408  | Request timeout                                                                      | The request takes too long.                                                                                                       |
+| 409  | Conflict                                                                             | The provided resource represents an out of date version of the resource.                                                          |
+| 418  | [I'm a teapot](https://en.wikipedia.org/wiki/Hyper_Text_Coffee_Pot_Control_Protocol) | The service refuses to brew coffee in a teapot.                                                                                   |
+| 429  | Too many requests                                                                    | The client is making too many requests in too short of a time period.                                                             |
+| 500  | Internal server error                                                                | The server failed to properly process the request.                                                                                |
+| 503  | Service unavailable                                                                  | The server is temporarily down. The client should try again with an exponential back off.                                         |
+### Headers
+Specify metadata about request or response. e.g. security handling, data formates, cookies
+| Header                      | Example                              | Meaning                                                                                                                                                                        |
+| --------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Authorization               | Bearer bGciOiJIUzI1NiIsI             | A token that authorized the user making the request.                                                                                                                           |
+| Accept                      | image/\*                             | What content format the client accepts. This may include wildcards.                                                                                                            |
+| Content-Type                | text/html; charset=utf-8             | The format of the response content. These are described using standard [MIME](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types) types. |
+| Cookie                      | SessionID=39s8cgj34; csrftoken=9dck2 | Key value pairs that are generated by the server and stored on the client.                                                                                                     |
+| Host                        | info.cern.ch                         | The domain name of the server. This is required in all requests.                                                                                                               |
+| Origin                      | cs260.click                          | Identifies the origin that caused the request. A host may only allow requests from specific origins.                                                                           |
+| Access-Control-Allow-Origin | https://cs260.click                  | Server response of what origins can make a request. This may include a wildcard.                                                                                               |
+| Content-Length              | 368                                  | The number of bytes contained in the response.                                                                                                                                 |
+| Cache-Control               | public, max-age=604800               | Tells the client how it can cache the response.                                                                                                                                |
+| User-Agent                  | Mozilla/5.0 (Macintosh)              | The client application making the request.                                                                                                                                     |
+### Body
+Defined by `Content-Type` header
+- e.g. may be HTML text, binary image format, JSON, JavaScript
+### Cookies
+- HTTP stateless, so one request knows nothing about previous or future requests
+- Cookie = solution: track state across requests
+- server generated, passed to client as HTTP header
+- client caches cookie, returns it back as HTTP header on subsequent requests
+- allows server to remember things like language preference of user, authentication credentials, track everything a user does
+### SOP and CORS
+- Same Origin Policy (SOP) - JavaScript can only make requests to a domain if it's the same domain the user is currently viewing
+- Then introduces problem: if you want to build a service that any web app can use, it would violate SOP and fail
+- Solution: Cross Origin Resource Sharing (CORS)
+- CORS allows client to specify origin of request and let server respond with what origins are allowed
+- To make requests to other sites form your site, their site needs to allow you through `Access-Control-Allow-Origin` header
+
+## Fetch
+Make HTTP requests from JavaScript
+- Basic usage: takes URL, returns promise. the `then` function takes a callback function that is called asynch when requested URL content is obtained
+- if returned content is type `application` or `json` you can use the `json` function 
+Example
+```js
+fetch('https://api.quotable.io/random')
+  .then((response) => response.json())
+  .then((jsonResponse) => {
+    console.log(jsonResponse);
+  });
+```
+*Response*
+```js
+{
+  content: 'Never put off till tomorrow what you can do today.',
+  author: 'Thomas Jefferson',
+};
+```
+*Post Example* - Populate options parameter with HTTP method and headers
+```js
+fetch('https://jsonplaceholder.typicode.com/posts', {
+  method: 'POST',
+  body: JSON.stringify({
+    title: 'test title',
+    body: 'test body',
+    userId: 1,
+  }),
+  headers: {
+    'Content-type': 'application/json; charset=UTF-8',
+  },
+})
+  .then((response) => response.json())
+  .then((jsonResponse) => {
+    console.log(jsonResponse);
+  });
+  ```
