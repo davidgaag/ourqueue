@@ -2185,4 +2185,78 @@ fetch('https://jsonplaceholder.typicode.com/posts', {
   .then((jsonResponse) => {
     console.log(jsonResponse);
   });
-  ```
+```
+## Service Design
+- KISS - primary objects are what user would expect in workflow
+- Sequence Diagram with primary objects of app
+### Endpoints
+- Service endpoints, often called Application Programming Interface (API)  
+Endpoint design considerations:
+1. Grammatical - HTTP means everything is a resource to GET, PUT, etc.
+2. Readable - resource readable in URL path
+3. Discoverable - ?
+4. Compatible - add new functionality without breaking existing clients
+5. Simple - no parallel access routes to resources, only one way to act on resource, endpoints do only one thing
+6. Documented - see [Open API Specification](https://spec.openapis.org/oas/latest.html)
+
+### Models for Exposing Endpoints
+- RPC - Remote Procedure Call
+  - service endpints are simple function calls
+  - usually just POST
+  - function name either in URL path or a parameter in POST body
+- REST - Representational State Transfer
+  - take advantage of foundational principles of HTTP
+  - always act upon resource
+  - use proper HTTP verbs
+- GraphQL
+  - focuses on manipulation instead of function call (RPC) or resource (REST)
+  - Queries specify desired data and how it should be joined or filtered
+  - helps remove lot of the logic for parsing endpoints and mapping requests to specific resources
+  - basically only one endpoint: query endpint
+  - downside: client has significant power to consume resources on the server
+    - also hard to implement auth rights to data, as they must be baked into the data schema
+  - Standards on how to define complex schema do exist
+## Node.js
+Deploy JavaScript outside of browser.  
+- Uses Chromium V8 engine from Google that is used in browsers and uses it in a console application instead
+### Node commands
+`node` followed by whatever
+- `node -e "console.log(1+1)"` execute line of JavaScript
+- `node main.js` run main.js
+- just `node` runs in interpreter mode, making console a JavaScript console
+### Node Package Manager `npm`
+- install package locally on machine using `npm`, then `require` statement in code that references the [ackage name]
+### `package.json`
+Contains:
+1. Metadata about project such as name and default entry JS file
+2. Commands you can execute to run, test, distribute, etc. your code
+3. Packages this project depends on  
+Don't check `node-modules` into Git repo, it will be large, can be rebuilt using `package.json` and `package-lock.json` files
+- include in `.gitignore` file
+- `npm install` will install the previously installed packages if you move the project to another location  
+Just remember the main steps:
+1. Create your project directory
+2. Initialize it for use with NPM by running `npm init -y`
+3. Make sure `.gitignore` file contains `node-modules`
+4. Install any desired packages with `npm install <package name here>`
+5. Add `require('<package name here>')` to your JavaScript code
+6. Run your code with `node main.js`
+### Creating a web service
+- `http.createServer` callback takes a request and respons object
+  - this function is called whenever server receives an HTTP request
+- `server.listen()` listens on a port and blocks until program is terminated
+```js
+const http = require('http');
+const server = http.createServer(function (req, res) {
+  res.writeHead(200, { 'Content-Type': 'text/html' });
+  res.write('<h1>Hello Node.js!</h1>');
+  res.end();
+});
+
+server.listen(8080, () => {
+  console.log(`Web service listening on port 8080`);
+});
+```
+### For further research
+- Node.js successor, more secure: Deno
+- competitor: Bun
