@@ -14,7 +14,7 @@
             integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     </head>
 
-    <body>
+    <body class="bg-dark text-light">
         <header class="container-fluid">
             <nav class="navbar fixed-top navbar-dark">
                 <a class="navbar-brand" href="#">OurQueue</a>
@@ -26,9 +26,20 @@
             </nav>
         </header>
 
-        <main>
-            <!--TODO-->
+        <main class="container-fluid bg-secondary">
+            <div>
+                <h1>Login</h1>
+            </div>
+            <div>
+                <input type="text" class="form-text w-25" placeholder="Username">
+                <input type="text" class="form-text w-25" placeholder="Password">
+            </div>
+            <form action="app.html">
+                <button id="username-input" type="submit" class="btn btn-primary mt-3">Login</button>
+                <button type="submit" class="btn btn-primary mt-3">Register</button>
+            </form>
         </main>
+
         <footer class="bg-dark text-secondary">
             <div class="container-fluid">
                 <span class="text-reset">David Gaag</span>
@@ -36,3 +47,5 @@
             </div>
         </footer>
     </body>
+
+</html>
