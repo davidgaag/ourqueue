@@ -95,4 +95,6 @@ class Queue {
     }
 }
 
+window.onload = () => document.getElementById("username").innerText = localStorage.getItem("username");
+
 queue = new Queue();
