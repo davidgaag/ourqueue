@@ -2260,3 +2260,124 @@ server.listen(8080, () => {
 ### For further research
 - Node.js successor, more secure: Deno
 - competitor: Bun
+## Express
+- framework for web service  
+- Call express constructor to create express app and lsten for HTTP requests on desired port
+```js
+const express = require('express');
+const app = express();
+
+app.listen(8080);
+```
+### Defining routes
+- HTTP endpoints implemented by defining routes that call a function based on HTTP path
+- e.g. get for /store/provo
+```js
+app.get('/store/provo', (req, res, next) => {
+  res.send({ name: 'provo' });
+});
+```
+- get function takes two params: URL path matching pattern, and callback function called when pattern matches
+- callback 3 params: HTTP req object, response object, and next routing function called if the routing function wants another function to generate a repsonse
+- path pattern parameters, prefix with colon, reference params with `req.params` object
+```js
+app.get('/store/:storeName', (req, res, next) => {
+  res.send({ name: req.params.storeName });
+});
+```
+- also wildcard and regex
+```js
+// Wildcard - matches /store/x and /star/y
+app.put('/st*/:storeName', (req, res) => res.send({ update: req.params.storeName }));
+
+// Pure regular expression
+app.delete(/\/store\/(.+)/, (req, res) => res.send({ delete: req.params[0] }));
+```
+### Middleware
+- design pattern
+- mediator and middleware
+- middleware: componentized pieces of functionality
+- mediator loads middleware components and determines order of execution
+- Express mediator, middleware functions are middleware components
+- middleware function pattern:
+```
+function middlewareName(req, res, next)
+```
+```js
+app.use((req, res, next) => {
+  console.log(req.originalUrl);
+  next();
+});
+```
+- Order matters
+- Built-in middleware
+  - `static` responds with static files found in directory matching request URL- `app.use(express.static('public'));`
+    - with this, you can create directory called `public`, then e.g. put `index.html` file that will return it when service is called without path
+- Third party middleware
+  - Use npm to install package, include with `require` function
+```js
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
+
+app.post('/cookie/:name/:value', (req, res, next) => {
+  res.cookie(req.params.name, req.params.value);
+  res.send({ cookie: `${req.params.name}:${req.params.value}` });
+});
+
+app.get('/cookie', (req, res, next) => {
+  res.send({ cookie: req.cookies });
+});
+```
+- Error-handling middleware `function errorMiddlewareName(err, req, res, next)`
+- FULL EXAMPLE
+```js
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const app = express();
+
+// Third party middleware - Cookies
+app.use(cookieParser());
+
+app.post('/cookie/:name/:value', (req, res, next) => {
+  res.cookie(req.params.name, req.params.value);
+  res.send({ cookie: `${req.params.name}:${req.params.value}` });
+});
+
+app.get('/cookie', (req, res, next) => {
+  res.send({ cookie: req.cookies });
+});
+
+// Creating your own middleware - logging
+app.use((req, res, next) => {
+  console.log(req.originalUrl);
+  next();
+});
+
+// Built in middleware - Static file hosting
+app.use(express.static('public'));
+
+// Routing middleware
+app.get('/store/:storeName', (req, res) => {
+  res.send({ name: req.params.storeName });
+});
+
+app.put('/st*/:storeName', (req, res) => res.send({ update: req.params.storeName }));
+
+app.delete(/\/store\/(.+)/, (req, res) => res.send({ delete: req.params[0] }));
+
+// Error middleware
+app.get('/error', (req, res, next) => {
+  throw new Error('Trouble in river city');
+});
+
+app.use(function (err, req, res, next) {
+  res.status(500).send({ type: err.name, message: err.message });
+});
+
+// Listening to a network port
+const port = 8080;
+app.listen(port, function () {
+  console.log(`Listening on port ${port}`);
+});
+```
