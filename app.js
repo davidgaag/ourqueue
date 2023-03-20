@@ -26,19 +26,19 @@ class Queue {
 
             const newSongId = "song" + this.nextSongNumber;
             // Obselete now, but in future, reorder list based on number of votes
-            this.songs.set(newSongId, new Song(songTitle, artistName));
+            // Will we need a map of elements in this list? Maybe in the future
+            //this.songs.set(newSongId, new Song(songTitle, artistName));
             this.nextSongNumber++;
             this.addSongToQueue(songTitle, artistName, newSongId)
             document.getElementById("queue-empty-info").style.display="none";
         }
     }
-
+    
     addSongToQueue(songTitle, artistName, id) {
         // Song title and artist
         const newSongListEl = document.createElement("li");
         newSongListEl.setAttribute("class", "list-group-item d-flex");
         newSongListEl.id = id;
-
 
         const newSongDiv = document.createElement("div");
         newSongDiv.setAttribute("class", "ms-2 me-auto");
@@ -56,6 +56,8 @@ class Queue {
 
         const voteCheckbox = document.createElement("input");
         voteCheckbox.setAttribute("type", "checkbox");
+        voteCheckbox.addEventListener("change", this.changeVoteCounter)
+        voteCheckbox.checked = true;
 
         const votesBadgeSpan = document.createElement("span");
         votesBadgeSpan.setAttribute("class", "badge bg-primary");
@@ -73,6 +75,23 @@ class Queue {
     
         const listElement = document.getElementById("queue-list");
         listElement.appendChild(newSongListEl);
+    }
+
+    changeVoteCounter() {
+        const songListElId = this.parentElement.parentElement.id;
+        const query = "#" + songListElId + " div span"
+        const votesBadgeSpan = document.querySelector(query);
+
+        let currNumVotes = parseInt(votesBadgeSpan.textContent.substring(7));
+        
+        if(this.checked === true) {
+            currNumVotes++;
+        } else {
+            currNumVotes--;
+        }
+
+        let newVoteBadgeText = "Votes: " + currNumVotes;
+        votesBadgeSpan.textContent = newVoteBadgeText;
     }
 }
 
