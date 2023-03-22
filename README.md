@@ -2381,3 +2381,85 @@ app.listen(port, function () {
   console.log(`Listening on port ${port}`);
 });
 ```
+
+## Debug Node.js
+Built-in in VSCode
+- "Start Debugging" - F5, select Node.js debugger
+- Breakpoints, step into, over, continue, etc.
+### Debugging Node.js web service
+- Can set breakpoints in endpoint callback and browser will await, breakpoint will pause execution
+### Nodemon
+- Wrapper around node that watches for file changes (saves) and upon detecting a change, restarts notes automatically (to save time in debug)
+- `npm install -g nodemon`
+- VSCode launch config: Command Palette (CMD+SHIFT+P) > Debug: add configuration > Node.js > Node.js: Nodemon setup > program from app.js to main.js (or whatever the main JS file is for your app), and save config file
+## Service Daemons - PM2
+- Default behavior: program close when you close console or computer restarts
+- Solution (keep programs running): register program as daemon
+  - PM2 - Process Manager 2
+- PM2 pre-installed on AWS server as part of AMI we selected on creation
+- Deployment script modifies PM2 to register and restart web services  
+
+| Command                                                    | Purpose                                                                          |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **pm2 ls**                                                 | List all of the hosted node processes                                            |
+| **pm2 monit**                                              | Visual monitor                                                                   |
+| **pm2 start index.js -n simon**                            | Add a new process with an explicit name                                          |
+| **pm2 start index.js -n startup -- 4000**                  | Add a new process with an explicit name and port parameter                       |
+| **pm2 stop simon**                                         | Stop a process                                                                   |
+| **pm2 restart simon**                                      | Restart a process                                                                |
+| **pm2 delete simon**                                       | Delete a process from being hosted                                               |
+| **pm2 delete all**                                         | Delete all processes                                                             |
+| **pm2 save**                                               | Save the current processes across reboot                                         |
+| **pm2 restart all**                                        | Reload all of the processes                                                      |
+| **pm2 restart simon-react --update-env**                   | Reload process and update the node version to the current environment definition |
+| **pm2 update**                                             | Reload pm2                                                                       |
+| **pm2 start env.js --watch --ignore-watch="node_modules"** | Automatically reload service when index.js changes                               |
+| **pm2 describe simon**                                     | Describe detailed process information                                            |
+| **pm2 startup**                                            | Displays the command to run to keep PM2 running after a reboot.                  |
+| **pm2 logs simon**                                         | Display process logs     
+### Registering new web service
+1. Add rule to Caddyfile to tell it how to direct requests for the domain
+2. Create a directory and add the files for the web service
+3. Configure PM2 to host the web service
+
+*Caddyfile*  
+Copy and alter for your use case, using different port that isn't used:
+```
+tacos.cs260.click {
+  reverse_proxy _ localhost:5000
+  header Cache-Control none
+  header -server
+  header Access-Control-Allow-Origin *
+}
+```
+- this tells Caddy to act as proxy for requests to `taco.cs260.click`, pass on to web service listening on the same machine, on port 5000
+- The other settings tell Caddy to return headers that disable caching, hide the fact that Caddy is the server (no reason to tell hackers anything about your server), and to allow any other origin server to make endpoint requests to this subdomain (basically disabling CORS).
+- Restart caddy to load new settings: `sudo service caddy restart`
+*Create web service*  
+- Copy startup directory
+- You'll see `index.js`, main JS file for web service
+  - Has code to listen on designated network port and respond to requests
+```js
+const port = process.argv.length > 2 ? process.argv[2] : 3000;
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`);
+});
+```
+- Also: directory `public` that has static HTML/CSS/JS files that your web service will respond with when requested. `index.js` enables this with: `app.use(express.static('public'));`
+- Start web service listening on port 5000, using Node as follows: `node index.js 5000`
+- Can now access service through browser or `curl`
+*Configure PM2 to host web service*  
+- Problem: above won't persist after ending SSH session - app will stop
+- `pm2 ls` on SSH session
+- Navigate to service directory, then run command similar to following:
+```
+cd ~/services/tacos
+pm2 start index.js -n tacos -- 5000
+pm2 save
+```
+## UI Testing
+- TDD (Test Driven Development)
+- Automating browser using Playwright
+- Selenium often slow/flaky
+- Playwright - newcomer, backed by Microsoft, good VSCode integration, runs a Node.js process, one of least flaky frameworks
+- `npm init playwright@latest`
