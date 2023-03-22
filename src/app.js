@@ -95,6 +95,8 @@ class Queue {
     }
 }
 
+// TODO: is this most user-friendly (juttery load)? This should probably load before the page loads. Problem was that the script source is in the HTML head and executes 
+// before the HTML exists
 window.onload = () => document.getElementById("username").innerText = localStorage.getItem("username");
 
 queue = new Queue();
