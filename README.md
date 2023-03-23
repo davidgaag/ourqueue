@@ -2261,7 +2261,7 @@ server.listen(8080, () => {
 - Node.js successor, more secure: Deno
 - competitor: Bun
 ## Express
-- framework for web service  
+- more robust framework for full web service (as opposed to simple web server using Node.js)
 - Call express constructor to create express app and lsten for HTTP requests on desired port
 ```js
 const express = require('express');
@@ -2463,3 +2463,61 @@ pm2 save
 - Selenium often slow/flaky
 - Playwright - newcomer, backed by Microsoft, good VSCode integration, runs a Node.js process, one of least flaky frameworks
 - `npm init playwright@latest`
+### BrowserStack
+- many devices, BrowserStack helps with this, can use with Selenium or interactively
+- Uses physical devices hosted in data center
+## Endpoint Testing
+- easier than UI b/c doesn't require browser
+- Current champion according to State of JS survey: Jest
+- (example Express endpoints)
+- Initialize app by exporting, then import into separate file to run service
+  - This way, we can start service when we run normally AND when we use test framework
+- Call Jest `test` function (no need for `require`)
+```js
+test('that equal values are equal', () => {
+  expect(false).toBe(true);
+});
+```
+- description parameter, human readable
+- function call parameter
+- `-D` flag for development in npm, won't be included in production release builds
+- edit `package.json` `scripts` to:
+```json
+"scripts": {
+  "test": "jest"
+},
+```
+- need `supertest` npm package to send HTTP requests without having to actually send them over the network
+- To make an HTTP request you pass the Express app to the supertest request function and then chain on the HTTP verb function that you want to call, along with the endpoint path. You can then chain on as many expect functions as you would like. 
+- If something goes wrong, the end function will contain an error and we pass the error along to the done function. Otherwise we just call done without the error.
+```js
+const request = require('supertest');
+const app = require('./server');
+
+test('getStore returns the desired store', (done) => {
+  request(app)
+    .get('/store/provo')
+    .expect(200)
+    .expect({ name: 'provo' })
+    .end((err) => (err ? done(err) : done()));
+});
+
+test('updateStores saves the correct value', (done) => {
+    request(app)
+      .get('/store/provo')
+      .expect(200)
+      .expect({ name: 'provo' })
+      .end((err) => (err ? done(err) : done()));
+  });
+  ```
+## Simon Service notes
+- express `app.use(express.static('public'));` serves up front end code from public directory, service only handles endpoint requests
+- don't include `node_modules` in github repo (would make a large repo, especially if there are updates)
+- `process` node object, `argv` array to access arguments from commandline
+- JSON parse built-in middleware `express.json()`
+- `express.Router` api router for service endpoints
+  - ``app.use(`/api`, apiRouter);``
+- don't forget about `?` ternary operator:
+  - `(expression ? valIfTruthy : valIfFalsy)`
+- underscore before identifier (var, function parameter, etc.) convention for some JS devs: "ignore this binding/parameter"
+- no path in express `app.use` (and only having the callback function) will redirect unknown paths to this endpoint (???)

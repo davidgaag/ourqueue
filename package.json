@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "OurQueue is a cross-platform, collaborative music queuing app. Create a queue on the host device and have your friends join and add songs to the queue. Customize your queue's settings by setting queue cooldowns or by letting your friends vote for the next song. Use OurQueue to spice up a long roadtrip or to let guests participate in making your party's soundtrack!",
   "main": "app.js",
+  "type": "module",
   "scripts": {},
   "keywords": [],
   "author": "",
