@@ -2521,3 +2521,142 @@ test('updateStores saves the correct value', (done) => {
   - `(expression ? valIfTruthy : valIfFalsy)`
 - underscore before identifier (var, function parameter, etc.) convention for some JS devs: "ignore this binding/parameter"
 - no path in express `app.use` (and only having the callback function) will redirect unknown paths to this endpoint (???)
+## Storage Services
+- database may be overkill, simpler solution will be cheaper if DB not needed
+- bad idea to store files on server:
+  1. Server has limited drive space, app will fail if run out
+  2. consider server ephemeral/temporary, can be thrown away and be replaced by a copy at any time. Storing files on server means the state cannot be easily replaced
+  3. Need backup copies of app and user files. If only one copy on server, if server disappears, the files disappear. We must always assume our server will disappear.
+- instead: use storage service designed to support production storage/delivery of files
+### AWS S3
+1. It has unlimited capacity
+1. You only pay for the storage that you use
+1. It is optimized for global access
+1. It keeps multiple redundant copies of every file
+1. You can version the files
+1. It is performant
+1. It supports metadata tags
+1. You can make your files publicly available directly from S3
+1. You can keep your files private and only accessible to your application
+- if want to use AWS S3 for startup, need to learn AWS SDK on the AWS website.
+- Generally, the steps:
+  1. Create S3 bucket to store data
+  2. Get credentials so app can access bucket
+  3. Use credentials in app
+    - NOTE: DON'T include credentials in your code. Scrapers will find your credentials in MINUTES or less
+  4. Use SDK to write, list, read, delete files from bucket
+## Data Services
+- SQL databases historically, then NoSQL ~2010 gained popularity
+
+| Service       | Specialty             |
+| ------------- | --------------------- |
+| MySQL         | Relational queries    |
+| Redis         | Memory cached objects |
+| ElasticSearch | Ranked free text      |
+| MongoDB       | JSON objects          |
+| DynamoDB      | Key value pairs       |
+| Neo4J         | Graph based data      |
+| InfluxDB      | Time series data      |
+### MongoDB
+- JSON objects as core data model
+  - makes it so our app uses JSON from top to bottom of tech stack
+- Mongo database made of collections that contain JSON docs
+  - abstraction: Collection = large array of JS objects, each with unique ID
+- no strict typing/schema requirements
+- query syntax has JavaScript-inspired flavor  
+### Using MongoDB in application
+- install using `npm`
+- use `MongoClient` object to make client connection to the database server, requires username, password, hostname of database server
+- using client connection, can get database object, from that can get collection object
+- collectiona allows insert, query for docs
+- insert: `await collection.insertOne(house);` inserts a JS object
+- query (no params for `find` gets all documents from collection)
+```js
+const cursor = collection.find();
+const rentals = await cursor.toArray();
+rentals.forEach((i) => console.log(i));
+```
+- query and options for `find`
+  - `const query = { property_type: 'Condo', beds: { $lt: 2 } };`
+  - queries for `property_type` of Condo, < 2 bedrooms
+  - below is full code, also specifies to sort by descending price, limit results to first 10 docss
+  - returns with auto-generated ID
+```js
+const query = { property_type: 'Condo', beds: { $lt: 2 } };
+
+const options = {
+  sort: { price: -1 },
+  limit: 10,
+};
+
+const cursor = collection.find(query, options);
+const rentals = await cursor.toArray();
+rentals.forEach((i) => console.log(i));
+```
+### Managed Services
+- outsource DB maintenance to company who manages DB
+- e.g. MongoDB Atlas
+### Keep keys out of code
+- protect Mongo database credentials
+- don't check into GitHub repo
+- load credentials at runtime from environment cariables
+  - JavaScript's `process.env` allows environment access
+```js
+const userName = process.env.MONGOUSER;
+const password = process.env.MONGOPASSWORD;
+const hostname = process.env.MONGOHOSTNAME;
+
+if (!userName) {
+  throw Error("Database not configured. Set environment variables");
+}
+```
+*Setting environment vars for production environment*
+1. ssh in
+2. `/etc/environment` - put environment vars in this file
+3. Tell PM2 to save new config to persist when server restarts
+  - `pm2 restart all --update-env`
+  - `pm2 save`  
+*Setting environment vars for development environment*
+- modify shell resource file to include the variables (`~/.zshrc`)
+### Use Mongo from your code
+```js
+const { MongoClient } = require('mongodb');
+
+// Read the credentials from environment variables so that you do not accidentally check in your credentials
+const userName = process.env.MONGOUSER;
+const password = process.env.MONGOPASSWORD;
+const hostname = process.env.MONGOHOSTNAME;
+
+async function main() {
+  // Connect to the database cluster
+  const url = `mongodb+srv://${userName}:${password}@${hostname}`;
+  const client = new MongoClient(url);
+  const collection = client.db('rental').collection('house');
+
+  // Insert a document
+  const house = {
+    name: 'Beachfront views',
+    summary: 'From your bedroom to the beach, no shoes required',
+    property_type: 'Condo',
+    beds: 1,
+  };
+  await collection.insertOne(house);
+
+  // Query the documents
+  const query = { property_type: 'Condo', beds: { $lt: 2 } };
+  const options = {
+    sort: { score: -1 },
+    limit: 10,
+  };
+
+  const cursor = collection.find(query, options);
+  const rentals = await cursor.toArray();
+  rentals.forEach((i) => console.log(i));
+}
+
+main().catch(console.error);
+```
+### simon-db Notes
+- set environment variables to protect credentials
+- `export` sets variable globally, persistant, whereas `set` is only for current terminal session (I think)
+- `zsh` vs. `bash`
