@@ -2658,5 +2658,6 @@ main().catch(console.error);
 ```
 ### simon-db Notes
 - set environment variables to protect credentials
-- `export` sets variable globally, persistant, whereas `set` is only for current terminal session (I think)
+- ~~`export` sets variable globally, NOT persistant, whereas `set` is only for current terminal session (I think)~~
+- need more notes on the above, but need to edit `~/.zshenv` on `zsh` terminal
 - `zsh` vs. `bash`
