@@ -2661,3 +2661,87 @@ main().catch(console.error);
 - ~~`export` sets variable globally, NOT persistant, whereas `set` is only for current terminal session (I think)~~
 - need more notes on the above, but need to edit `~/.zshenv` on `zsh` terminal
 - `zsh` vs. `bash`
+## Authorization Services
+- standard protocols, including OAuth, SAML, OIDC
+- concepts like Single Sign On (SSO) and Federated Login
+- SSO: same credentials for multiple web apps
+- Federated login: login once, auth token reused to auto-login to multiple websites
+### Account Creation and Login
+- two endpoints: create and login
+- set up connection to database, use express for endpoints, `app.use(express.json());` middleware, 
+- uuid package for unique IDs for authtokens
+```js
+const uuid = require('uuid');
+token = uuid.v4();
+```
+- securely store passwords: `bcrypt`, secure one-way hash of password
+```js
+const bcrypt = require('bcrypt');
+
+async function createUser(email, password) {
+  // Hash the password before we insert it into the database
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  const user = {
+    email: email,
+    password: passwordHash,
+    token: uuid.v4(),
+  };
+  await collection.insertOne(user);
+
+  return user;
+}
+```
+- cookies for subsequent requests go in HTTP cookies - we'll use `cookie-parser` package
+- cookie options in express:
+  - `httpOnly` - tells the browser to not allow JavaScript running on the browser to read the cookie
+  - `secure` - requires HTTPS to be used when sending the cookie back to the server.
+  - `sameSite` - will only return the cookie to the domain that generated it.
+```js
+const cookieParser = require('cookie-parser');
+
+// Use the cookie parser middleware
+app.use(cookieParser());
+
+apiRouter.post('/auth/create', async (req, res) => {
+  if (await DB.getUser(req.body.email)) {
+    res.status(409).send({ msg: 'Existing user' });
+  } else {
+    const user = await DB.createUser(req.body.email, req.body.password);
+
+    // Set the cookie
+    setAuthCookie(res, user.token);
+
+    res.send({
+      id: user._id,
+    });
+  }
+});
+
+function setAuthCookie(res, authToken) {
+  res.cookie('token', authToken, {
+    secure: true,
+    httpOnly: true,
+    sameSite: 'strict',
+  });
+}
+```
+- Then, compare password with hashed password in login endpoint using `bcrypt.compare`
+```js
+app.post('/auth/login', async (req, res) => {
+  const user = await getUser(req.body.email);
+  if (user) {
+    if (await bcrypt.compare(req.body.password, user.password)) {
+      setAuthCookie(res, user.token);
+      res.send({ id: user._id });
+      return;
+    }
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
+});
+```
+### simon-login Notes
+- can check if user is already authenticated before showing login page, that way can vary based on auth status
+- `secureApiRouter` wraps existing router, adds middleware function to verify auth cookie
+  - done using `express.Router()`
+  - makes routing endpoints requiring authentication easy, register with `secureApiRouter` 
