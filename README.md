@@ -2745,3 +2745,46 @@ app.post('/auth/login', async (req, res) => {
 - `secureApiRouter` wraps existing router, adds middleware function to verify auth cookie
   - done using `express.Router()`
   - makes routing endpoints requiring authentication easy, register with `secureApiRouter` 
+## WebSocket
+- HTTP: client-server architecture
+  - doesn't work for many applications, e.g. notificaitons, distributed task processing, p2p communication, asynch events - all need communication initiated by two or more connected devices
+- WebSocket is a solution to this - fully duplexed, changes vanilla HTTP initial connection to peer to peer connection
+  - still only two people, need server to act as intermediary for more people
+### Creating WebSocket Conversation
+```js
+const socket = new WebSocket('ws://localhost:9900');
+
+socket.onmessage = (event) => {
+  console.log('received: ', event.data);
+};
+
+socket.send('I am listening');
+```
+- send messages with `send` function, register callback using `onmessage` to receive messages
+- `ws` package: WebSocketServer
+- when create a WebSocketServer with port, WSS will listen on that port for HTTP connections and auto-upgrade them to WebSocket if the request has a `connection: Upgrade` header
+- connection detected -> call server's `on connection` callback
+```js
+const { WebSocketServer } = require('ws');
+
+const wss = new WebSocketServer({ port: 9900 });
+
+wss.on('connection', (ws) => {
+  ws.on('message', (data) => {
+    const msg = String.fromCharCode(...data);
+    console.log('received: %s', msg);
+
+    ws.send(`I heard you say "${msg}"`);
+  });
+
+  ws.send('Hello webSocket');
+});
+```
+## WebSocket Debug
+- VSCode to debug server, Chrome to debug client
+## WebSocket chat
+Server:
+- on connection: insert object representing that connection into list of all connections from chat peers
+- on message receive: loop through peer connections and forward message to everyone except he who sent the message
+- on close: remove peer from list
+- ping clients every ten seconds to prevent auto-close, but close if we don't receive a pong back
