@@ -416,6 +416,8 @@ p {
 - 300px high, 1em gap between grid items 
 
 # Simon CSS Notes
+- Flex main and cross axes depend on if you use rows or columns
+- beware mixing bootstrap with your CSS, or you might have unexpected behavior (e.g. bootstrap flex and vanilla CSS flex)
 
 # Startup HTML/CSS Notes
 - `class` is how you access bootstrap CSS styles
