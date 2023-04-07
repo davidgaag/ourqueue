@@ -27,11 +27,12 @@
         </header>
 
         <main class="container-fluid bg-secondary">
-            <div>
+            <div id="test">
                 <h1><span id="username"></span>'s Queue</h1>
                 <p id="queue-empty-info" class="p-1 fs-5">Fill the form below and click the button to add a song!</p>
             </div>
-            <div>
+            
+            <div id="queue-list-container" class="container-fluid overflow-scroll">
                 <ol id="queue-list" class="list-group list-group-numbered">
                 </ol>
             </div>
@@ -46,36 +47,18 @@
                 </form>
             </div>
 
-            <!-- Old Main 
-            <div>
-                <h1>Mystery person's Queue</h1>
-                <ol class="list-group list-group-numbered">
-                    <li class="list-group-item d-flex">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">Song Title 1</div>
-                            Artist 1
-                        </div>
-                        <span class="badge bg-primary align-self-center">Votes: 3</span>
-                    </li>
-                    <li class="list-group-item d-flex">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">Song Title 2</div>
-                            Artist 2
-                        </div>
-                        <span class="badge bg-primary align-self-center">Votes: 1</span>
-                    </li>
-                    <li class="list-group-item d-flex">
-                        <div class="ms-2 me-auto">
-                            <div class="fw-bold">Song Title 3</div>
-                            Artist 3
-                        </div>
-                        <span class="badge bg-primary align-self-center">Votes: 0</span>
-                    </li>
-
-                </ol>
+            <div id="chat-container" class="container-fluid mb-3">
+                <h3>Chat</h3>
+                <div id="chat-box" class="bg-white rounded p-2 overflow-scroll">
+                    <p>Message 1</p>
+                    <p>Message 2</p>
+                    <p>Message 3</p>
+                    <p>Message 4</p>
+                    <p>Message 5</p>
+                    <p>Message 6</p>
+                </div>
             </div>
 
-        -->
 
             <!-- Bootstrap modal which has a dependency on a bootstrap javascript file, so I'm commenting it out
         <div class="modal fade" id="add-song-modal" tabindex="-1" >
