@@ -21,8 +21,18 @@ function getUser(username) {
     return userCollection.findOne({ username: username });
 }
 
-async function registerUser(user) {
-    // TODO
+async function registerUser(username, password) {
+    // Hash password before inserting
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const user = {
+        username: username,
+        password: passwordHash,
+        token: uuid.v4(),
+    };
+    await userCollection.insertOne(user);
+
+    return user;
 }
 
 function addSong(song) {
