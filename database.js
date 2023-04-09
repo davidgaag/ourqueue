@@ -36,5 +36,13 @@ async function registerUser(username, password) {
 }
 
 function addSong(song) {
+    queueCollection.insertOne(song);
+}
+
+function getQueue(queueId) {
+
+}
+
+module.exports = {
     // TODO
 }
