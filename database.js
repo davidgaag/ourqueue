@@ -7,7 +7,7 @@ const password = process.env.MONGOPASSWORD_STARTUP;
 const hostName = MONGOHOSTNAME_STARTUP;
 
 if (!username) {
-    throw Error("Database not configured. Set environment variables")
+   throw Error("Database not configured. Set environment variables")
 
 }
 
@@ -18,25 +18,25 @@ const userCollection = client.db("ourqueue").collection("user");
 const queueCollection = client.db("ourqueue").collection("queue");
 
 function getUser(username) {
-    return userCollection.findOne({ username: username });
+   return userCollection.findOne({ username: username });
 }
 
 async function registerUser(username, password) {
-    // Hash password before inserting
-    const passwordHash = await bcrypt.hash(password, 10);
+   // Hash password before inserting
+   const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = {
-        username: username,
-        password: passwordHash,
-        token: uuid.v4(),
-    };
-    await userCollection.insertOne(user);
+   const user = {
+      username: username,
+      password: passwordHash,
+      token: uuid.v4(),
+   };
+   await userCollection.insertOne(user);
 
-    return user;
+   return user;
 }
 
 function addSong(song) {
-    queueCollection.insertOne(song);
+   queueCollection.insertOne(song);
 }
 
 function getQueue(queueId) {
@@ -44,5 +44,6 @@ function getQueue(queueId) {
 }
 
 module.exports = {
-    // TODO
+   getUser,
+   registerUser,
 }
