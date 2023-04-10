@@ -10,6 +10,21 @@ class Queue {
         this.queueListEl = document.getElementById("queue-list");
         this.songs = new Map();
         this.nextSongNumber = 1;
+
+        this.currUsername = localStorage.getItem("username");
+        document.getElementById("username").innerText = this.currUsername;
+        this.loadQueue();
+    }
+
+    // Gets the songs from the database
+    async loadQueue() {
+        const currUsername = await fetch("/api/queue/")
+
+        const response = await fetch("/api/queue/" + currUsername);
+        let songs = await response.json;
+        for (let song in songs) {
+            this.addSongToQueue(song.songTitle, song.artistName, -1)
+        }
     }
 
     addSong() {
@@ -94,9 +109,5 @@ class Queue {
         votesBadgeSpan.textContent = newVoteBadgeText;
     }
 }
-
-// TODO: is this most user-friendly (juttery load)? This should probably load before the page loads. Problem was that the script source is in the HTML head and executes 
-// before the HTML exists
-window.onload = () => document.getElementById("username").innerText = localStorage.getItem("username");
 
 queue = new Queue();

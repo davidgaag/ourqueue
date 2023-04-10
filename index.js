@@ -62,13 +62,13 @@ apiRouter.delete("/auth/logout", (_req, res) => {
 // queueSecurityRouter verifies credentials for queue endpoints where authentication is needed
 var queueSecurityRouter = express.Router();
 apiRouter.use(queueSecurityRouter);
-queueSecurityRouter.use(`/queue/:queueId`)
+queueSecurityRouter.use(`/queue/:queueOwner`)
 
 // Authentication middleware for queues
 queueSecurityRouter.use(async (req, res, next) => {
    authToken = req.cookies[authCookieName];
    const user = await db.getUserByAuthToken(authToken);
-   const queue = await db.getQueue(req.params.queueId);
+   const queue = await db.getQueue(req.params.queueOwner);
    if (db.checkQueueAuthorization(user._id, queue._id)) {
       next();
    } else {
@@ -78,13 +78,13 @@ queueSecurityRouter.use(async (req, res, next) => {
 
 // Get queue by ID
 queueSecurityRouter.get("/", async (req, res) => {
-   const queue = await db.getQueue(req.params.queueId);
+   const queue = await db.getQueue(req.params.queueOwner);
    res.send(queue);
 });
 
 // Delete queue by ID
 queueSecurityRouter.delete("/deleteQueue", async (req, res) => {
-   if (db.deleteQueue(req.params.queueId)) {
+   if (db.deleteQueue(req.params.queueOwner)) {
       res.status(200).send();
    } else {
       res.status(404).send({ msg: "Could not find a queue with that ID"});

@@ -40,14 +40,14 @@ async function registerUser(username, password) {
    return user;
 }
 
-function addSong(songTitle, artistName, queueOwnerId) {
+function addSong(songTitle, artistName, queueOwner) {
    const song = {
       _id: uuid.v4(),
-      queueOwnerId: queueOwnerId,
+      queueOwner: queueOwner,
       songTitle: songTitle,
       artistName: artistName,
    }
-   
+
    queueCollection.insertOne(song);
    return song._id;
 }
@@ -56,28 +56,28 @@ function addSong(songTitle, artistName, queueOwnerId) {
 function deleteSong(song) {
    // Returns true if it succeeded, false otherwise
    // TODO: Need more info than song title
-   return queueCollection.deleteOne( { songTitle: song.songTitle, _id: song.queueId } ); 
+   return queueCollection.deleteOne( { songTitle: song.songTitle, _id: song.queueOwner } ); 
 }
 */
 
-function getQueue(queueId) {
-   return queueCollection.find({ queueId: queueId }).toArray();
+function getQueue(queueOwner) {
+   return queueCollection.find({ queueOwner: queueOwner }).toArray();
 }
 
-function deleteQueue(queueId) {
-   if (queueCollection.deleteMany( { queueId: queueId })) {
-      queueAuthorizationsCollection.deleteMany({ queueId: queueId });
+function deleteQueue(queueOwner) {
+   if (queueCollection.deleteMany( { queueOwner: queueOwner })) {
+      queueAuthorizationsCollection.deleteMany({ queueOwner: queueOwner });
    } else {
       return false;
    }
 }
 
-function addQueueAuthorization(userId, queueId) {
-   queueAuthorizationsCollection.insertOne({ userId: userId, queueId: queueId});
+function addQueueAuthorization(userId, queueOwner) {
+   queueAuthorizationsCollection.insertOne({ userId: userId, queueOwner: queueOwner});
 }
 
-function checkQueueAuthorization(userId, queueId) {
-   return queueAuthorizationsCollection.findOne( { userId: userId, queueId: queueId });
+function checkQueueAuthorization(userId, queueOwner) {
+   return queueAuthorizationsCollection.findOne( { userId: userId, queueOwner: queueOwner });
 }
 
 module.exports = {
