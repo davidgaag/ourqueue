@@ -27,11 +27,11 @@
         </header>
 
         <main class="container-fluid bg-secondary">
-            <div id="test">
+            <div>
                 <h1><span id="username"></span>'s Queue</h1>
                 <p id="queue-empty-info" class="p-1 fs-5">Fill the form below and click the button to add a song!</p>
             </div>
-            
+
             <div id="queue-list-container" class="container-fluid overflow-scroll">
                 <ol id="queue-list" class="list-group list-group-numbered">
                 </ol>
@@ -46,6 +46,8 @@
                         queue</button>
                 </form>
             </div>
+
+            <button id="delete-queue" type="button" class="btn btn-danger">Delete Queue</button>
 
             <div id="chat-container" class="container-fluid mb-3">
                 <h3>Chat</h3>

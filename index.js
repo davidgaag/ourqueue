@@ -93,7 +93,7 @@ queueSecurityRouter.delete("/deleteQueue", async (req, res) => {
 
 // Add song to a queue
 queueSecurityRouter.post("/addSong", async (req, res) => {
-   const songId = await db.addSong(req.body);
+   const songId = await db.addSong(req.body.songTitle, req.body.artistName, req.body.userId);
    res.status(204).send({ songId: songId });
 }); 
 

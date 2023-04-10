@@ -32,6 +32,13 @@ main {
     */
 }
 
+#delete-queue {
+    flex: 0 1em;
+    margin-top: 1em;
+    width: fit-content;
+    align-self: center;
+}
+
 #chat-container {
     flex: 0 10vh;
     align-self: center;

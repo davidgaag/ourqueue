@@ -40,8 +40,14 @@ async function registerUser(username, password) {
    return user;
 }
 
-function addSong(song) {
-   song._id = uuid.v4();
+function addSong(songTitle, artistName, queueOwnerId) {
+   const song = {
+      _id: uuid.v4(),
+      queueOwnerId: queueOwnerId,
+      songTitle: songTitle,
+      artistName: artistName,
+   }
+   
    queueCollection.insertOne(song);
    return song._id;
 }
@@ -55,11 +61,11 @@ function deleteSong(song) {
 */
 
 function getQueue(queueId) {
-   return queueCollection.find({ _id: queueId }).toArray();
+   return queueCollection.find({ queueId: queueId }).toArray();
 }
 
 function deleteQueue(queueId) {
-   if (queueCollection.deleteOne( { _id: queueId })) {
+   if (queueCollection.deleteMany( { queueId: queueId })) {
       queueAuthorizationsCollection.deleteMany({ queueId: queueId });
    } else {
       return false;
