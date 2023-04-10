@@ -43,12 +43,27 @@ function addSong(song) {
    queueCollection.insertOne(song);
 }
 
-function getQueue(queueId) {
+/* TODO: how to delete a song? By ID? probably.
+function deleteSong(song) {
+   // Returns true if it succeeded, false otherwise
+   // TODO: Need more info than song title
+   return queueCollection.deleteOne( { songTitle: song.songTitle, _id: song.queueId } ); 
+}
+*/
 
+function getQueue(queueId) {
+   return queueCollection.find({ _id: queueId }).toArray();
+}
+
+function deleteQueue(queueId) {
+   return queueCollection.deleteOne( { _id: queueId });
 }
 
 module.exports = {
    getUser,
    getUserByAuthToken,
    registerUser,
+   addSong,
+   getQueue,
+   deleteQueue
 }

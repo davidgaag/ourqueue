@@ -63,6 +63,11 @@ apiRouter.delete("/auth/logout", (_req, res) => {
 var secureApiRouter = express.Router();
 apiRouter.use(secureApiRouter);
 
+/* TODO: This middleware may be obselete, or we need to rewrite it.
+   Simon doesn't have any resource-specific authentication, whereas our application will
+   need to check if a user is authorized to acccess specific content.
+*/
+// Authentication check middleware
 secureApiRouter.use(async (req, res, next) => {
    authToken = req.cookies[authCookieName];
    const user = await db.getUserByAuthToken(authToken);
@@ -72,6 +77,29 @@ secureApiRouter.use(async (req, res, next) => {
       res.status(401).send({ msg: "Unauthorized" });
    }
 });
+
+// Get queue by ID
+secureApiRouter.get("/queue/:queueId", async (req, res) => {
+   const queue = await db.getQueue(req.params.queueId);
+   res.send(queue);
+});
+
+// Delete queue by ID
+secureApiRouter.delete("/queue/:queueId/deleteQueue", async (req, res) => {
+   if (db.deleteQueue(req.params.queueId)) {
+      res.status(200).send();
+   } else {
+      res.status(404).send({ msg: "Could not find that song in that queue"});
+   }
+});
+
+// Add song to a queue
+secureApiRouter.post("/queue/:queueId/addSong", async (req, res) => {
+   await db.addSong(req.body);
+   res.status(204).end();
+}); 
+
+// TODO: Delete song from queue
 
 // Sets the cookie in the HTTP response
 function setAuthCookie(res, authToken) {
