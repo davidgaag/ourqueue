@@ -2790,3 +2790,6 @@ Server:
 - on message receive: loop through peer connections and forward message to everyone except he who sent the message
 - on close: remove peer from list
 - ping clients every ten seconds to prevent auto-close, but close if we don't receive a pong back
+
+## Startup Service Notes
+- `?.` optional chaining: access object's property or call a function, but if property or function is undefined or null, the expression will evaulatue to undefined instead of throwing an error
