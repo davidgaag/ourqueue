@@ -16,6 +16,7 @@ const url = `mongodb+srv://${username}:${password}@${hostName}`;
 const client = new MongoClient(url);
 const userCollection = client.db("ourqueue").collection("user");
 const queueCollection = client.db("ourqueue").collection("queue");
+const queueAuthorizationsCollection = client.db("ourqueue").collection("queueAuthorizations");
 
 function getUser(username) {
    return userCollection.findOne({ username: username });
@@ -40,7 +41,9 @@ async function registerUser(username, password) {
 }
 
 function addSong(song) {
+   song._id = uuid.v4();
    queueCollection.insertOne(song);
+   return song._id;
 }
 
 /* TODO: how to delete a song? By ID? probably.
@@ -56,7 +59,19 @@ function getQueue(queueId) {
 }
 
 function deleteQueue(queueId) {
-   return queueCollection.deleteOne( { _id: queueId });
+   if (queueCollection.deleteOne( { _id: queueId })) {
+      queueAuthorizationsCollection.deleteMany({ queueId: queueId });
+   } else {
+      return false;
+   }
+}
+
+function addQueueAuthorization(userId, queueId) {
+   queueAuthorizationsCollection.insertOne({ userId: userId, queueId: queueId});
+}
+
+function checkQueueAuthorization(userId, queueId) {
+   return queueAuthorizationsCollection.findOne( { userId: userId, queueId: queueId });
 }
 
 module.exports = {
@@ -65,5 +80,7 @@ module.exports = {
    registerUser,
    addSong,
    getQueue,
-   deleteQueue
+   deleteQueue,
+   addQueueAuthorization,
+   checkQueueAuthorization
 }

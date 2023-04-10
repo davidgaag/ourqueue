@@ -22,7 +22,7 @@ app.listen(port, () => {
 var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
-// Create authtoken for new user
+// Create authToken for new user
 apiRouter.post("/auth/create", async (req, res) => {
    if (await db.getUser(req.body.username)) {
       res.status(409).send({ msg: "Existing user" });
@@ -59,19 +59,17 @@ apiRouter.delete("/auth/logout", (_req, res) => {
 
 // TODO: do we need/want an endpoint to see user information ({username, authenticated?})?
 
-// secureApiRouter verifies credentials for endpoints where authentication is needed
-var secureApiRouter = express.Router();
-apiRouter.use(secureApiRouter);
+// queueSecurityRouter verifies credentials for queue endpoints where authentication is needed
+var queueSecurityRouter = express.Router();
+apiRouter.use(queueSecurityRouter);
+queueSecurityRouter.use(`/queue/:queueId`)
 
-/* TODO: This middleware may be obselete, or we need to rewrite it.
-   Simon doesn't have any resource-specific authentication, whereas our application will
-   need to check if a user is authorized to acccess specific content.
-*/
-// Authentication check middleware
-secureApiRouter.use(async (req, res, next) => {
+// Authentication middleware for queues
+queueSecurityRouter.use(async (req, res, next) => {
    authToken = req.cookies[authCookieName];
    const user = await db.getUserByAuthToken(authToken);
-   if (user) {
+   const queue = await db.getQueue(req.params.queueId);
+   if (db.checkQueueAuthorization(user._id, queue._id)) {
       next();
    } else {
       res.status(401).send({ msg: "Unauthorized" });
@@ -79,27 +77,27 @@ secureApiRouter.use(async (req, res, next) => {
 });
 
 // Get queue by ID
-secureApiRouter.get("/queue/:queueId", async (req, res) => {
+queueSecurityRouter.get("/", async (req, res) => {
    const queue = await db.getQueue(req.params.queueId);
    res.send(queue);
 });
 
 // Delete queue by ID
-secureApiRouter.delete("/queue/:queueId/deleteQueue", async (req, res) => {
+queueSecurityRouter.delete("/deleteQueue", async (req, res) => {
    if (db.deleteQueue(req.params.queueId)) {
       res.status(200).send();
    } else {
-      res.status(404).send({ msg: "Could not find that song in that queue"});
+      res.status(404).send({ msg: "Could not find a queue with that ID"});
    }
 });
 
 // Add song to a queue
-secureApiRouter.post("/queue/:queueId/addSong", async (req, res) => {
-   await db.addSong(req.body);
-   res.status(204).end();
+queueSecurityRouter.post("/addSong", async (req, res) => {
+   const songId = await db.addSong(req.body);
+   res.status(204).send({ songId: songId });
 }); 
 
-// TODO: Delete song from queue
+// TODO: Delete song from queue 
 
 // Sets the cookie in the HTTP response
 function setAuthCookie(res, authToken) {
