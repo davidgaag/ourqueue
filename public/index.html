@@ -28,17 +28,21 @@
         </header>
 
         <main class="container-fluid bg-secondary">
-            <div>
+            <div id="login-controls">
                 <h1>Login</h1>
-            </div>
-            <div>
                 <input id="username-input" type="text" class="form-text w-25" placeholder="Username">
                 <input type="text" class="form-text w-25" placeholder="Password">
+                <form action="my-queue.html">
+                    <button type="submit" class="btn btn-primary mt-3" onclick="login()">Login</button>
+                    <button type="submit" class="btn btn-primary mt-3" onclick="register()">Register</button>
+                </form>
             </div>
-            <form action="my-queue.html">
-                <button type="submit" class="btn btn-primary mt-3" onclick="login()">Login</button>
-                <button type="submit" class="btn btn-primary mt-3" onclick="register()">Register</button>
-            </form>
+            <div id="user-display">
+                <h1 id="username">Welcome</h1>
+                <a class="btn btn-primary" href="my-queue.html">My Queue</a>
+                <a class="btn btn-primary" href="other-queue.html">Connect To A Queue</a>
+                <button class="btn btn-danger">Logout</a>
+            </div>
         </main>
 
         <footer class="bg-dark text-secondary">

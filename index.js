@@ -57,7 +57,16 @@ apiRouter.delete("/auth/logout", (_req, res) => {
    res.status(204).end();
 });
 
-// TODO: do we need/want an endpoint to see user information ({username, authenticated?})?
+// Get user information, including username and auth status 
+apiRouter.get("/user/:username", async (req, res) => {
+   const user = await db.getUser(req.params.username);
+   if (user) {
+      const token = req?.cookies.token;
+      res.send({ username: user.username, authenticated: token === user.token });
+      return;
+   }
+   res.status(404).send({ msg: "Unknown" });
+});
 
 // queueSecurityRouter verifies credentials for queue endpoints where authentication is needed
 var queueSecurityRouter = express.Router();
@@ -87,7 +96,7 @@ queueSecurityRouter.delete("/deleteQueue", async (req, res) => {
    if (db.deleteQueue(req.params.queueOwner)) {
       res.status(200).send();
    } else {
-      res.status(404).send({ msg: "Could not find a queue with that ID"});
+      res.status(404).send({ msg: "Could not find a queue with that ID" });
    }
 });
 
@@ -95,7 +104,7 @@ queueSecurityRouter.delete("/deleteQueue", async (req, res) => {
 queueSecurityRouter.post("/addSong", async (req, res) => {
    const songId = await db.addSong(req.body.songTitle, req.body.artistName, req.body.userId);
    res.status(204).send({ songId: songId });
-}); 
+});
 
 // TODO: Delete song from queue 
 
