@@ -51,6 +51,28 @@ apiRouter.post("/auth/login", async (req, res) => {
    res.status(401).send({ msg: "Unauthorized" });
 });
 
+// Delete authToken if it's stored in the cookie
+apiRouter.delete("/auth/logout", (_req, res) => {
+   res.clearCookie(authCookieName);
+   res.status(204).end();
+});
+
+// TODO: do we need/want an endpoint to see user information ({username, authenticated?})?
+
+// secureApiRouter verifies credentials for endpoints where authentication is needed
+var secureApiRouter = express.Router();
+apiRouter.use(secureApiRouter);
+
+secureApiRouter.use(async (req, res, next) => {
+   authToken = req.cookies[authCookieName];
+   const user = await db.getUserByAuthToken(authToken);
+   if (user) {
+      next();
+   } else {
+      res.status(401).send({ msg: "Unauthorized" });
+   }
+});
+
 // Sets the cookie in the HTTP response
 function setAuthCookie(res, authToken) {
    res.cookie(authCookieName, authToken, {

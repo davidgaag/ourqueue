@@ -21,6 +21,10 @@ function getUser(username) {
    return userCollection.findOne({ username: username });
 }
 
+function getUserByAuthToken(authToken) {
+   return userCollection.findOne({ authToken: authToken });
+}
+
 async function registerUser(username, password) {
    // Hash password before inserting
    const passwordHash = await bcrypt.hash(password, 10);
@@ -45,5 +49,6 @@ function getQueue(queueId) {
 
 module.exports = {
    getUser,
+   getUserByAuthToken,
    registerUser,
 }
