@@ -18,12 +18,33 @@
     }
 })();
 
-function login() {
-    
+async function login() {
+    loginOrRegister(`/api/auth/login`);
 }
 
-function register(username) {
-    
+async function register() {
+    loginOrRegister(`/api/auth/register`);
+}
+
+async function loginOrCreate(endpoint) {
+    const username = document.getElementById("username-input");
+    const password = document.getElementById("password-input");
+    const response = await fetch(endpoint, {
+        method: "post",
+        body: JSON.stringify({ username: username, password: password }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+        },
+    });
+    const body = await response.json();
+
+    if (response?.status === 200) {
+        localStorage.setItem("username", username);
+        location.reload();
+    } else {
+        const errorEl = document.getElementById("login-error-text").textContent = "Invalid credentials";
+        errorEl.style.display = "block";
+    }
 }
 
 async function getUser(username) {

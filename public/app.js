@@ -110,6 +110,6 @@ class Queue {
     }
 }
 
-let queue;
+let queue = new Queue();
 
-window.onload = () => queue = new Queue();
+//window.onload = () => queue = new Queue();

@@ -23,7 +23,7 @@ var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
 // Create authToken for new user
-apiRouter.post("/auth/create", async (req, res) => {
+apiRouter.post("/auth/register", async (req, res) => {
    if (await db.getUser(req.body.username)) {
       res.status(409).send({ msg: "Existing user" });
    } else {
