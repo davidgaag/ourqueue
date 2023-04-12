@@ -2,23 +2,23 @@
     let authenticated = false;
     const username = localStorage.getItem("username");
     if (username) {
-        const nameEl = document.getElementById("username");
-        nameEl.value = username;
-        const user = await getUser(nameEl.value);
+        // const nameEl = document.getElementById("username");
+        // nameEl.value = username;
+        const user = await getUser(username);
         authenticated = user?.authenticated;
     }
 
+    setDisplay("load-animation", "none");
+
     if (authenticated) {
-        document.getElementById("username").textContent = username;
-        setDisplay("login-controls", "hidden");
+        document.getElementById("username").textContent = "Welcome, " + username;
         setDisplay("user-display", "block");
     } else {
         setDisplay("login-controls", "block");
-        setDisplay("user-display", "hidden");
     }
 })();
 
-async function login() {
+async function logIn() {
     loginOrRegister(`/api/auth/login`);
 }
 
@@ -26,15 +26,20 @@ async function register() {
     loginOrRegister(`/api/auth/register`);
 }
 
-async function loginOrCreate(endpoint) {
-    const username = document.getElementById("username-input");
-    const password = document.getElementById("password-input");
+async function logOut() {
+
+}
+
+async function loginOrRegister(endpoint) {
+    const username = document.getElementById("username-input").value;
+    const password = document.getElementById("password-input").value;
     const response = await fetch(endpoint, {
         method: "post",
         body: JSON.stringify({ username: username, password: password }),
         headers: {
             "Content-type": "application/json; charset=UTF-8",
         },
+        credentials: "same-origin"
     });
     const body = await response.json();
 
@@ -42,7 +47,8 @@ async function loginOrCreate(endpoint) {
         localStorage.setItem("username", username);
         location.reload();
     } else {
-        const errorEl = document.getElementById("login-error-text").textContent = "Invalid credentials";
+        const errorEl = document.getElementById("login-error-text");
+        errorEl.textContent = body.msg;
         errorEl.style.display = "block";
     }
 }
@@ -50,7 +56,7 @@ async function loginOrCreate(endpoint) {
 async function getUser(username) {
     const response = await fetch(`/api/user/${username}`);
     if (response.status === 200) {
-        return response.json;
+        return response.json();
     }
     return null;
 }

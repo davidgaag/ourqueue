@@ -4,7 +4,7 @@ const uuid = require("uuid");
 
 const username = process.env.MONGOUSER_STARTUP;
 const password = process.env.MONGOPASSWORD_STARTUP;
-const hostName = MONGOHOSTNAME_STARTUP;
+const hostName = process.env.MONGOHOSTNAME_STARTUP;
 
 if (!username) {
    throw Error("Database not configured. Set environment variables")

@@ -5,6 +5,9 @@ const app = express();
 const db = require("./database.js");
 
 const authCookieName = "token";
+/* TODO: get around Safari localhost not storing secure cookies. For now, using Chrome to debug
+const currEnvironment = process.env.NODE_ENVIRONMENT;
+*/
 
 // The service port. In production the front-end code is statically hosted by the service on the same port.
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
@@ -13,14 +16,14 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Serve up the front-end static content hosting
-app.use(express.static('public'));
-
-app.listen(port, () => {
-   console.log(`Listening on port ${port}`);
-});
+app.use(express.static("public"));
 
 var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
+
+apiRouter.post("/test", async (req, res) => {
+   console.log("API accessed");
+});
 
 // Create authToken for new user
 apiRouter.post("/auth/register", async (req, res) => {
@@ -48,7 +51,7 @@ apiRouter.post("/auth/login", async (req, res) => {
          return;
       }
    }
-   res.status(401).send({ msg: "Unauthorized" });
+   res.status(401).send({ msg: "Invalid credentials/unauthorized" });
 });
 
 // Delete authToken if it's stored in the cookie
@@ -70,8 +73,7 @@ apiRouter.get("/user/:username", async (req, res) => {
 
 // queueSecurityRouter verifies credentials for queue endpoints where authentication is needed
 var queueSecurityRouter = express.Router();
-apiRouter.use(queueSecurityRouter);
-queueSecurityRouter.use(`/queue/:queueOwner`)
+apiRouter.use(`/queue/:queueOwner`, queueSecurityRouter);
 
 // Authentication middleware for queues
 queueSecurityRouter.use(async (req, res, next) => {
@@ -108,11 +110,20 @@ queueSecurityRouter.post("/addSong", async (req, res) => {
 
 // TODO: Delete song from queue 
 
+app.use((_req, res) => {
+   res.sendFile('index.html', { root: 'public' });
+ });
+
 // Sets the cookie in the HTTP response
 function setAuthCookie(res, authToken) {
+
    res.cookie(authCookieName, authToken, {
       secure: true,
       httpOnly: true,
-      sameSite: "strict:",
+      sameSite: 'strict',
    });
 }
+
+app.listen(port, () => {
+   console.log(`Listening on port ${port}`);
+});
