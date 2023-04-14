@@ -27,7 +27,9 @@ async function register() {
 }
 
 async function logOut() {
-
+    fetch(`/api/auth/logout`, {
+        method: "delete",
+    }).then(() => (window.location.href = "/"));
 }
 
 async function loginOrRegister(endpoint) {
