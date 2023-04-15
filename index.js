@@ -65,7 +65,7 @@ apiRouter.get("/user/:username", async (req, res) => {
    const user = await db.getUser(req.params.username);
    if (user) {
       const token = req?.cookies.token;
-      res.send({ username: user.username, authenticated: token === user.token });
+      res.send({ username: user?.username, authenticated: token === user.token });
       return;
    }
    res.status(404).send({ msg: "Unknown" });
@@ -80,7 +80,7 @@ queueSecurityRouter.use(async (req, res, next) => {
    authToken = req.cookies[authCookieName];
    const user = await db.getUserByAuthToken(authToken);
    const queue = await db.getQueue(req.params.queueOwner);
-   if (db.checkQueueAuthorization(user.username, queue.queueOwner)) {
+   if (db.checkQueueAuthorization(user?.username, queue?.queueOwner)) {
       next();
    } else {
       res.status(401).send({ msg: "Unauthorized" });
