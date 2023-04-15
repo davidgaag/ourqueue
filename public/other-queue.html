@@ -7,6 +7,7 @@
         <title>OurQueue</title>
         <link rel="icon" href="favicon.ico" />
         <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="app.css" />
 
         <!-- Include bootstrap CSS framework -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -29,9 +30,16 @@
         <main class="container-fluid bg-secondary">
             <div>
                 <h1><span id="username"></span>Connect to Queue</h1>
-                <p id="join-queue-prompt" class="p-1 fs-5">Enter the username of the user whose queue you'd like to join:</p>
-                <p id="queue-empty-prompt" class="p-1 fs-5" style="display: none">Fill the form below and click the button
-                    to add a song!</p>
+                <p id="queue-empty-prompt" class="p-1 fs-5" style="display: none">Fill the form below and click the
+                    button to add a song!</p>
+                <p id="join-queue-prompt" class="p-1 fs-5">Enter the username of the user whose queue you'd like to
+                    join:</p>
+                <div id="join-">
+                    <input id="username-input" type="text" class="form-text" placeholder="Username"></input>
+                    <button class="btn btn-primary" onclick="queue.loadOtherQueue()">Connect</button>
+                    <div id="error-alert" class="alert alert-warning mt-3" style="display: none">You do not have
+                        permission to join this queue</div>
+                </div>
             </div>
 
             <!-- Loading animation (pure CSS, so needs multiple divs) -->
@@ -62,9 +70,15 @@
                 </div>
                 <button type="button" class="btn btn-primary" onclick="queue.addSong()">Add song to
                     queue</button>
+                <input id="invitee-username" type="text" class="form-text" placeholder="Invitee username" required>
+                <div>
+                    <button type="button" class="btn btn-primary" onclick="queue.inviteUser()">Add user to queue</button>
+                    <button type="button" class="btn btn-danger" onclick="queue.uninviteUser()">Remove user from queue</button>
+                </div>
             </div>
 
-            <button id="clear-queue" type="button" class="btn btn-danger mt-1" onclick="queue.clearQueue()" style="display: none">Clear Queue</button>
+            <button id="clear-queue" type="button" class="btn btn-danger mt-1" onclick="queue.clearQueue()"
+                style="display: none">Clear Queue</button>
 
             <div id="chat-container" class="container-fluid mb-3">
                 <h3>Chat</h3>
@@ -85,6 +99,7 @@
                 <a class="text-reset" href="https://github.com/davidgaag/ourqueue">GitHub Repository</a>
             </div>
         </footer>
+        <script src="app.js"></script>
     </body>
 
 </html>

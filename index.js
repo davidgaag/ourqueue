@@ -78,9 +78,9 @@ apiRouter.use(`/queue/:queueOwner`, queueSecurityRouter);
 // Authentication middleware for queues
 queueSecurityRouter.use(async (req, res, next) => {
    authToken = req.cookies[authCookieName];
-   const user = await db.getUserByAuthToken(authToken);
+   user = await db.getUserByAuthToken(authToken);
    const queue = await db.getQueue(req.params.queueOwner);
-   if (db.checkQueueAuthorization(user?.username, queue?.queueOwner)) {
+   if (user.username === req.params.queueOwner || db.checkQueueAuthorization(user?.username, queue?.queueOwner).length === 1) {
       next();
    } else {
       res.status(401).send({ msg: "Unauthorized" });
@@ -94,8 +94,8 @@ queueSecurityRouter.get("/", async (req, res) => {
 });
 
 // Delete queue by ID
-queueSecurityRouter.delete("/deleteQueue", async (req, res) => {
-   if (db.deleteQueue(req.params.queueOwner)) {
+queueSecurityRouter.delete("/clearQueue", async (req, res) => {
+   if (db.clearQueue(req.params.queueOwner)) {
       res.status(200).send();
    } else {
       res.status(404).send({ msg: "Could not find a queue with that ID" });
@@ -107,6 +107,19 @@ queueSecurityRouter.post("/addSong", async (req, res) => {
    const songId = await db.addSong(req.body.songTitle, req.body.artistName, req.body.queueOwner);
    res.status(204).send({ songId: songId });
 });
+
+// Add permission for a user to join a queue
+queueSecurityRouter.post("/inviteUser/:username", async (req, res) => {
+   db.addQueueAuthorization(req.params.username, req.params.queueOwner);
+   res.status(204).send();
+});
+
+// Remove permission for a user to join a queue
+queueSecurityRouter.delete("/uninviteUser/:username", async (req, res) => {
+   db.removeQueueAuthorization(req.params.username, req.params.queueOwner);
+   res.status(200).send();
+});
+
 
 // TODO: Delete song from queue 
 

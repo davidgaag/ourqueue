@@ -64,16 +64,23 @@ function getQueue(queueOwner) {
    return queueCollection.find({ queueOwner: queueOwner }).toArray();
 }
 
-function deleteQueue(queueOwner) {
-   return queueCollection.deleteMany( { queueOwner: queueOwner });
+function clearQueue(queueOwner) {
+   return queueCollection.deleteMany({ queueOwner: queueOwner });
 }
 
-function addQueueAuthorization(userId, queueOwner) {
-   queueAuthorizationsCollection.insertOne({ userId: userId, queueOwner: queueOwner});
+function addQueueAuthorization(username, queueOwner) {
+   const query = { username: username, queueOwner: queueOwner };
+   const update = { $set: { username: username, queueOwner: queueOwner } };
+   const options = { upsert: true };
+   queueAuthorizationsCollection.updateOne(query, update, options);
 }
 
-function checkQueueAuthorization(userId, queueOwner) {
-   return queueAuthorizationsCollection.findOne( { userId: userId, queueOwner: queueOwner });
+function removeQueueAuthorization(username, queueOwner) {
+   return queueAuthorizationsCollection.deleteMany({ username: username, queueOwner: queueOwner });
+}
+
+function checkQueueAuthorization(username, queueOwner) {
+   return queueAuthorizationsCollection.findOne({ username: username, queueOwner: queueOwner });
 }
 
 module.exports = {
@@ -82,7 +89,8 @@ module.exports = {
    registerUser,
    addSong,
    getQueue,
-   deleteQueue,
+   clearQueue,
    addQueueAuthorization,
+   removeQueueAuthorization,
    checkQueueAuthorization
 }

@@ -5,11 +5,9 @@ class Queue {
         this.nextSongNumber = 1;
 
         this.currUsername = localStorage.getItem("username");
-        document.getElementById("username").innerText = this.currUsername;
         if (window.location.href.endsWith("/my-queue.html")) {
+            document.getElementById("username").innerText = this.currUsername;
             this.loadMyQueue();
-        } else if (window.location.href.endsWith("/other-queue.html")) {
-            this.loadOtherQueue();
         }
     }
 
@@ -23,7 +21,7 @@ class Queue {
                 this.addSongToDom(song.songTitle, song.artistName, "song" + this.nextSongNumber);
                 this.nextSongNumber++;
             }
-        } else  {
+        } else {
             document.getElementById("queue-empty-prompt").style.display = "block";
         }
         document.getElementById("song-information-container").style.display = "flex";
@@ -31,7 +29,14 @@ class Queue {
     }
 
     async loadOtherQueue() {
+        const username = document.getElementById("username-input").value;
+        const response = await fetch(`/api/queue/` + username);
+        let songs = await response.json();
+        if (songs.length) {
 
+        } else {
+            document.getElementById("error-alert").style.display = "block";
+        }
     }
 
     addSong() {
@@ -47,18 +52,15 @@ class Queue {
             artistNameEl.value = "";
 
             const newSongId = "song" + this.nextSongNumber;
-            // Obselete now, but in future, reorder list based on number of votes
-            // Will we need a map of elements in this list? Maybe in the future
-            //this.songs.set(newSongId, new Song(songTitle, artistName));
             this.nextSongNumber++;
             this.addSongToDom(songTitle, artistName, newSongId);
             document.getElementById("queue-empty-prompt").style.display = "none";
             fetch(`/api/queue/${this.currUsername}/addSong`, {
-                method: "post", 
-                body: JSON.stringify({ 
+                method: "post",
+                body: JSON.stringify({
                     queueOwner: this.currUsername,
-                    songTitle: songTitle, 
-                    artistName: artistName, 
+                    songTitle: songTitle,
+                    artistName: artistName,
                 }),
                 headers: {
                     "Content-type": "application/json; charset=UTF-8",
@@ -130,9 +132,39 @@ class Queue {
         votesBadgeSpan.textContent = newVoteBadgeText;
     }
 
+    async inviteUser() {
+        const inviteeUsernameInputEl = document.getElementById("invitee-username");
+        const inviteeUsername = inviteeUsernameInputEl.value;
+        if (inviteeUsername) {
+            fetch(`/api/queue/` + this.currUsername + `/inviteUser/` + inviteeUsername, {
+                method: "post",
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                },
+                credentials: "same-origin"
+            });
+        } else {
+            inviteeUsernameInputEl.reportValidity();
+        }
+        inviteeUsernameInputEl.value = "";
+    }
+
+    async uninviteUser() {
+        const inviteeUsernameInputEl = document.getElementById("invitee-username");
+        const inviteeUsername = inviteeUsernameInputEl.value;
+        if (inviteeUsername) {
+            fetch(`/api/queue/` + this.currUsername + `/uninviteUser/` + inviteeUsername, {
+                method: "delete"
+            });
+        } else {
+            inviteeUsernameInputEl.reportValidity();
+        }
+        inviteeUsernameInputEl.value = "";
+    }
+
     async clearQueue() {
-        const response = await fetch(`/api/queue/${this.currUsername}/deleteQueue`, {
-            method: "delete", 
+        const response = await fetch(`/api/queue/${this.currUsername}/clearQueue`, {
+            method: "delete",
         });
         if (response.status >= 200 && response.status <= 300) {
             let queue = document.getElementById("queue-list");
@@ -142,6 +174,7 @@ class Queue {
             document.getElementById("queue-empty-prompt").style.display = "block";
         }
     }
+
 }
 
 let queue = new Queue();
