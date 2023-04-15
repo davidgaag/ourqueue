@@ -6,7 +6,7 @@ class Queue {
 
         this.currUsername = localStorage.getItem("username");
         if (window.location.href.endsWith("/my-queue.html")) {
-            document.getElementById("username").innerText = this.currUsername;
+            document.getElementById("queue-title").innerText = this.currUsername + "'s Queue";
             this.loadMyQueue();
         }
     }
@@ -17,10 +17,7 @@ class Queue {
         let songs = await response.json();
         if (songs) {
             document.getElementById("load-animation").style.display = "none";
-            for (const [i, song] of songs.entries()) {
-                this.addSongToDom(song.songTitle, song.artistName, "song" + this.nextSongNumber);
-                this.nextSongNumber++;
-            }
+            this.addSongsFromRemote(songs);
         } else {
             document.getElementById("queue-empty-prompt").style.display = "block";
         }
@@ -31,19 +28,41 @@ class Queue {
     async loadOtherQueue() {
         const username = document.getElementById("username-input").value;
         const response = await fetch(`/api/queue/` + username);
-        let songs = await response.json();
-        if (songs.length) {
-
+        if (response.status === 200) {
+            this.currQueueOwnerUsername = username;
+            let songs = await response.json();
+            if (songs.length) {
+                this.addSongsFromRemote(songs);
+                document.getElementById("queue-title").innerText = username + "'s Queue";
+                document.getElementById("join-controls").style.display = "none";
+                document.getElementById("song-information-container").style.display = "flex";
+                document.getElementById("clear-queue").style.display = "block";
+            } else {
+                document.getElementById("queue-empty-prompt").style.display = "block";
+            }
         } else {
             document.getElementById("error-alert").style.display = "block";
         }
     }
 
-    addSong() {
+    addSongsFromRemote(songs) {
+        for (const [i, song] of songs.entries()) {
+            this.addSongToDom(song.songTitle, song.artistName, "song" + this.nextSongNumber);
+            this.nextSongNumber++;
+        }
+    }
+
+    addSong(ownQueue) {
         const songTitleEl = document.getElementById("song-title");
         const artistNameEl = document.getElementById("artist-name");
         const songTitle = songTitleEl.value;
         const artistName = artistNameEl.value;
+        let username;
+        if (ownQueue) {
+            username = this.currUsername;
+        } else {
+            username = this.currQueueOwnerUsername;
+        }
 
         if (!songTitle) {
             songTitleEl.reportValidity();
@@ -55,10 +74,10 @@ class Queue {
             this.nextSongNumber++;
             this.addSongToDom(songTitle, artistName, newSongId);
             document.getElementById("queue-empty-prompt").style.display = "none";
-            fetch(`/api/queue/${this.currUsername}/addSong`, {
+            fetch(`/api/queue/${username}/addSong`, {
                 method: "post",
                 body: JSON.stringify({
-                    queueOwner: this.currUsername,
+                    queueOwner: username,
                     songTitle: songTitle,
                     artistName: artistName,
                 }),
@@ -70,7 +89,7 @@ class Queue {
         }
     }
 
-    // TODO: ID needed? currently unused.
+    // TODO: ID needed? currently unused (except for local vote updating)
     addSongToDom(songTitle, artistName, id) {
         // Song title and artist
         const newSongListEl = document.createElement("li");
@@ -132,7 +151,7 @@ class Queue {
         votesBadgeSpan.textContent = newVoteBadgeText;
     }
 
-    async inviteUser() {
+    inviteUser() {
         const inviteeUsernameInputEl = document.getElementById("invitee-username");
         const inviteeUsername = inviteeUsernameInputEl.value;
         if (inviteeUsername) {
@@ -149,7 +168,7 @@ class Queue {
         inviteeUsernameInputEl.value = "";
     }
 
-    async uninviteUser() {
+    uninviteUser() {
         const inviteeUsernameInputEl = document.getElementById("invitee-username");
         const inviteeUsername = inviteeUsernameInputEl.value;
         if (inviteeUsername) {

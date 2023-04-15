@@ -21,17 +21,15 @@ app.use(express.static("public"));
 var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
-apiRouter.post("/test", async (req, res) => {
-   console.log("API accessed");
-});
-
 // Create authToken for new user
 apiRouter.post("/auth/register", async (req, res) => {
-   if (await db.getUser(req.body.username)) {
+   // Validate username input
+   const validUsername = /^[a-zA-Z0-9]+$/.test(req.body.username);
+   if (!validUsername || await db.getUser(req.body.username)) {
       res.status(409).send({ msg: "Existing user" });
    } else {
       const user = await db.registerUser(req.body.username, req.body.password);
-
+      
       setAuthCookie(res, user.token);
 
       // Sends the HTTP response with the body containing the user ID
@@ -78,9 +76,8 @@ apiRouter.use(`/queue/:queueOwner`, queueSecurityRouter);
 // Authentication middleware for queues
 queueSecurityRouter.use(async (req, res, next) => {
    authToken = req.cookies[authCookieName];
-   user = await db.getUserByAuthToken(authToken);
-   const queue = await db.getQueue(req.params.queueOwner);
-   if (user.username === req.params.queueOwner || db.checkQueueAuthorization(user?.username, queue?.queueOwner).length === 1) {
+   const user = await db.getUserByAuthToken(authToken);
+   if (user?.username === req.params.queueOwner || await db.checkQueueAuthorization(user?.username, req.params.queueOwner)) {
       next();
    } else {
       res.status(401).send({ msg: "Unauthorized" });
@@ -109,17 +106,16 @@ queueSecurityRouter.post("/addSong", async (req, res) => {
 });
 
 // Add permission for a user to join a queue
-queueSecurityRouter.post("/inviteUser/:username", async (req, res) => {
+queueSecurityRouter.post("/inviteUser/:username", (req, res) => {
    db.addQueueAuthorization(req.params.username, req.params.queueOwner);
    res.status(204).send();
 });
 
 // Remove permission for a user to join a queue
-queueSecurityRouter.delete("/uninviteUser/:username", async (req, res) => {
+queueSecurityRouter.delete("/uninviteUser/:username", (req, res) => {
    db.removeQueueAuthorization(req.params.username, req.params.queueOwner);
    res.status(200).send();
 });
-
 
 // TODO: Delete song from queue 
 

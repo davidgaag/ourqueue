@@ -30,7 +30,7 @@
 
         <main class="container-fluid bg-secondary">
             <div>
-                <h1><span id="username"></span>'s Queue</h1>
+                <h1 id="queue-title">'s Queue</h1>
                 <p id="queue-empty-prompt" class="p-1 fs-5" style="display: none">Fill the form below and click the button
                     to add a song!</p>
             </div>
@@ -61,7 +61,7 @@
                     <input id="song-title" type="text" class="form-text" placeholder="Song title" required>
                     <input id="artist-name" type="text" class="form-text" placeholder="Artist name">
                 </div>
-                <button type="button" class="btn btn-primary" onclick="queue.addSong()">Add song to
+                <button type="button" class="btn btn-primary" onclick="queue.addSong(true)">Add song to
                     queue</button>
                 <input id="invitee-username" type="text" class="form-text" placeholder="Invitee username" required>
                 <div>

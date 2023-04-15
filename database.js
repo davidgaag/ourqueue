@@ -79,8 +79,8 @@ function removeQueueAuthorization(username, queueOwner) {
    return queueAuthorizationsCollection.deleteMany({ username: username, queueOwner: queueOwner });
 }
 
-function checkQueueAuthorization(username, queueOwner) {
-   return queueAuthorizationsCollection.findOne({ username: username, queueOwner: queueOwner });
+async function checkQueueAuthorization(username, queueOwner) {
+   return await queueAuthorizationsCollection.findOne({ username: username, queueOwner: queueOwner });
 }
 
 module.exports = {
