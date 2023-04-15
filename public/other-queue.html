@@ -28,8 +28,53 @@
 
         <main class="container-fluid bg-secondary">
             <div>
-                <h1>Connect to Queue</h1>
-                <p>Placeholder text. TODO</p>
+                <h1><span id="username"></span>Connect to Queue</h1>
+                <p id="queue-empty-info" class="p-1 fs-5" style="display: none">Fill the form below and click the button
+                    to add a song!</p>
+            </div>
+
+            <!-- Loading animation (pure CSS, so needs multiple divs) -->
+            <div id="load-animation" class="lds-default">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+
+            <div id="queue-list-container" class="container-fluid overflow-scroll">
+                <ol id="queue-list" class="list-group list-group-numbered">
+                </ol>
+            </div>
+
+            <div id="song-information-container" style="display: none">
+                <div>
+                    <input id="song-title" type="text" class="form-text" placeholder="Song title" required>
+                    <input id="artist-name" type="text" class="form-text" placeholder="Artist name">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="queue.addSong()">Add song to
+                    queue</button>
+            </div>
+
+            <button id="clear-queue" type="button" class="btn btn-danger mt-1" onclick="queue.clearQueue()" style="display: none">Clear Queue</button>
+
+            <div id="chat-container" class="container-fluid mb-3">
+                <h3>Chat</h3>
+                <div id="chat-box" class="bg-white rounded p-2 overflow-scroll">
+                    <p>Message 1</p>
+                    <p>Message 2</p>
+                    <p>Message 3</p>
+                    <p>Message 4</p>
+                    <p>Message 5</p>
+                    <p>Message 6</p>
+                </div>
             </div>
         </main>
 

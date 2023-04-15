@@ -35,16 +35,19 @@
    width: 40vw;
 }
 
-#delete-queue {
+#clear-queue {
    flex: 0 1em;
    margin-top: 1em;
    width: fit-content;
    align-self: center;
+   margin-top: auto;
 }
 
 #chat-container {
    flex: 0 10vh;
-   align-self: center;
+   align-self: flex-end;
+   justify-self: flex-end;
+   margin-top: auto;
 }
 
 #chat-box {

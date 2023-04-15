@@ -65,11 +65,7 @@ function getQueue(queueOwner) {
 }
 
 function deleteQueue(queueOwner) {
-   if (queueCollection.deleteMany( { queueOwner: queueOwner })) {
-      queueAuthorizationsCollection.deleteMany({ queueOwner: queueOwner });
-   } else {
-      return false;
-   }
+   return queueCollection.deleteMany( { queueOwner: queueOwner });
 }
 
 function addQueueAuthorization(userId, queueOwner) {

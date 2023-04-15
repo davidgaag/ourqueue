@@ -56,7 +56,7 @@
                 </ol>
             </div>
 
-            <div id="song-information-container">
+            <div id="song-information-container" style="display: none">
                 <div>
                     <input id="song-title" type="text" class="form-text" placeholder="Song title" required>
                     <input id="artist-name" type="text" class="form-text" placeholder="Artist name">
@@ -65,7 +65,7 @@
                     queue</button>
             </div>
 
-            <button id="delete-queue" type="button" class="btn btn-danger">Clear Queue and Invitees</button>
+            <button id="clear-queue" type="button" class="btn btn-danger mt-1" onclick="queue.clearQueue()" style="display: none">Clear Queue</button>
 
             <div id="chat-container" class="container-fluid mb-3">
                 <h3>Chat</h3>
@@ -78,26 +78,6 @@
                     <p>Message 6</p>
                 </div>
             </div>
-
-
-            <!-- Bootstrap modal which has a dependency on a bootstrap javascript file, so I'm commenting it out
-        <div class="modal fade" id="add-song-modal" tabindex="-1" >
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5">Add song</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dimiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="addSong()">Add song</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    -->
         </main>
 
         <footer class="bg-dark text-secondary">

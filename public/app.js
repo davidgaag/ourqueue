@@ -1,10 +1,3 @@
-function Song(songTitle, artistName, numVotes = 1) {
-    return {
-        songTitle: songTitle,
-        artistName: artistName,
-        numVotes: numVotes,
-    };
-}
 class Queue {
     constructor() {
         this.queueListEl = document.getElementById("queue-list");
@@ -28,6 +21,8 @@ class Queue {
         } else  {
             document.getElementById("queue-empty-info").style.display = "block";
         }
+        document.getElementById("song-information-container").style.display = "flex";
+        document.getElementById("clear-queue").style.display = "block";
     }
 
     addSong() {
@@ -124,6 +119,19 @@ class Queue {
 
         let newVoteBadgeText = "Votes: " + currNumVotes;
         votesBadgeSpan.textContent = newVoteBadgeText;
+    }
+
+    async clearQueue() {
+        const response = await fetch(`/api/queue/${this.currUsername}/deleteQueue`, {
+            method: "delete", 
+        });
+        if (response.status >= 200 && response.status <= 300) {
+            let queue = document.getElementById("queue-list");
+            while (queue.firstChild) {
+                queue.removeChild(queue.firstChild);
+            }
+            document.getElementById("queue-empty-info").style.display = "block";
+        }
     }
 }
 
