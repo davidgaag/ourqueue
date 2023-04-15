@@ -2793,3 +2793,5 @@ Server:
 
 ## Startup Service Notes
 - `?.` optional chaining: access object's property or call a function, but if property or function is undefined or null, the expression will evaulatue to undefined instead of throwing an error
+- You don't need Live Server once you have the Express server set up, even locally. Express will serve up the files
+- Flex only applies to direct children (I may have known this, but forgot)

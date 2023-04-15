@@ -23,7 +23,7 @@ function getUser(username) {
 }
 
 function getUserByAuthToken(authToken) {
-   return userCollection.findOne({ authToken: authToken });
+   return userCollection.findOne({ token: authToken });
 }
 
 async function registerUser(username, password) {

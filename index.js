@@ -80,14 +80,14 @@ queueSecurityRouter.use(async (req, res, next) => {
    authToken = req.cookies[authCookieName];
    const user = await db.getUserByAuthToken(authToken);
    const queue = await db.getQueue(req.params.queueOwner);
-   if (db.checkQueueAuthorization(user._id, queue._id)) {
+   if (db.checkQueueAuthorization(user.username, queue.queueOwner)) {
       next();
    } else {
       res.status(401).send({ msg: "Unauthorized" });
    }
 });
 
-// Get queue by ID
+// Get queue by username
 queueSecurityRouter.get("/", async (req, res) => {
    const queue = await db.getQueue(req.params.queueOwner);
    res.send(queue);
@@ -104,7 +104,7 @@ queueSecurityRouter.delete("/deleteQueue", async (req, res) => {
 
 // Add song to a queue
 queueSecurityRouter.post("/addSong", async (req, res) => {
-   const songId = await db.addSong(req.body.songTitle, req.body.artistName, req.body.userId);
+   const songId = await db.addSong(req.body.songTitle, req.body.artistName, req.body.queueOwner);
    res.status(204).send({ songId: songId });
 });
 

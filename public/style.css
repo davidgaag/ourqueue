@@ -8,21 +8,6 @@ header {
     flex: 0 80px;
 }
 
-main {
-    flex: 1 calc(100vh - 110px);
-    padding-top: 1em;
-    display: flex;
-    flex-direction: column;
-}
-
-footer {
-    flex: 0 30px;
-}
-
-footer a {
-    float: right;
-}
-
 menu {
     flex: 1;
     display: flex;
@@ -38,6 +23,21 @@ menu {
 
 menu .nav-item {
     padding: 0 0.3em;
+}
+
+main {
+    flex: 1 calc(100vh - 110px);
+    padding-top: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    flex: 0 30px;
+}
+
+footer a {
+    float: right;
 }
 
 footer a {
