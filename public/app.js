@@ -6,23 +6,32 @@ class Queue {
 
         this.currUsername = localStorage.getItem("username");
         document.getElementById("username").innerText = this.currUsername;
-        this.loadQueue();
+        if (window.location.href.endsWith("/my-queue.html")) {
+            this.loadMyQueue();
+        } else if (window.location.href.endsWith("/other-queue.html")) {
+            this.loadOtherQueue();
+        }
     }
 
-    // Gets the songs from the database
-    async loadQueue() {
+    // Gets current users' songs from the database
+    async loadMyQueue() {
         const response = await fetch(`/api/queue/` + this.currUsername);
         let songs = await response.json();
         if (songs) {
             document.getElementById("load-animation").style.display = "none";
             for (const [i, song] of songs.entries()) {
-                this.addSongToDom(song.songTitle, song.artistName, -1);
+                this.addSongToDom(song.songTitle, song.artistName, "song" + this.nextSongNumber);
+                this.nextSongNumber++;
             }
         } else  {
-            document.getElementById("queue-empty-info").style.display = "block";
+            document.getElementById("queue-empty-prompt").style.display = "block";
         }
         document.getElementById("song-information-container").style.display = "flex";
         document.getElementById("clear-queue").style.display = "block";
+    }
+
+    async loadOtherQueue() {
+
     }
 
     addSong() {
@@ -43,7 +52,7 @@ class Queue {
             //this.songs.set(newSongId, new Song(songTitle, artistName));
             this.nextSongNumber++;
             this.addSongToDom(songTitle, artistName, newSongId);
-            document.getElementById("queue-empty-info").style.display = "none";
+            document.getElementById("queue-empty-prompt").style.display = "none";
             fetch(`/api/queue/${this.currUsername}/addSong`, {
                 method: "post", 
                 body: JSON.stringify({ 
@@ -130,7 +139,7 @@ class Queue {
             while (queue.firstChild) {
                 queue.removeChild(queue.firstChild);
             }
-            document.getElementById("queue-empty-info").style.display = "block";
+            document.getElementById("queue-empty-prompt").style.display = "block";
         }
     }
 }
