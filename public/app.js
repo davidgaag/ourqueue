@@ -18,10 +18,15 @@ class Queue {
 
     // Gets the songs from the database
     async loadQueue() {
-        const response = await fetch(`/api/queue/` + currUsername);
-        let songs = response.json;
-        for (let song in songs) {
-            this.addSongToDom(song.songTitle, song.artistName, -1);
+        const response = await fetch(`/api/queue/` + this.currUsername);
+        let songs = await response.json();
+        if (songs) {
+            document.getElementById("load-animation").style.display = "none";
+            for (const [i, song] of songs.entries()) {
+                this.addSongToDom(song.songTitle, song.artistName, -1);
+            }
+        } else  {
+            document.getElementById("queue-empty-info").style.display = "block";
         }
     }
 

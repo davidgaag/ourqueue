@@ -72,7 +72,7 @@ apiRouter.get("/user/:username", async (req, res) => {
 });
 
 // queueSecurityRouter verifies credentials for queue endpoints where authentication is needed
-var queueSecurityRouter = express.Router();
+var queueSecurityRouter = express.Router({ mergeParams: true });
 apiRouter.use(`/queue/:queueOwner`, queueSecurityRouter);
 
 // Authentication middleware for queues
@@ -112,7 +112,7 @@ queueSecurityRouter.post("/addSong", async (req, res) => {
 
 app.use((_req, res) => {
    res.sendFile('index.html', { root: 'public' });
- });
+});
 
 // Sets the cookie in the HTTP response
 function setAuthCookie(res, authToken) {
