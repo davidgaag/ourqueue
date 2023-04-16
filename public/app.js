@@ -3,12 +3,22 @@ class Queue {
         this.queueListEl = document.getElementById("queue-list");
         this.songs = new Map();
         this.nextSongNumber = 1;
+        this.socket;
+        this.socketActive = false;
 
         this.currUsername = localStorage.getItem("username");
         if (window.location.href.endsWith("/my-queue.html")) {
             document.getElementById("queue-title").innerText = this.currUsername + "'s Queue";
             this.loadMyQueue();
         }
+
+        const messageInputEl = document.getElementById("chat-message-input");
+        messageInputEl.addEventListener("keydown", (event) => {
+            if (this.socketActive && event.key === "Enter" ) {
+                messageInputEl.value = "";
+                // TODO
+            }
+        });
     }
 
     // Gets current users' songs from the database
@@ -23,6 +33,7 @@ class Queue {
         }
         document.getElementById("song-information-container").style.display = "flex";
         document.getElementById("clear-queue").style.display = "block";
+        this.configureWebSocket();
     }
 
     async loadOtherQueue() {
@@ -40,6 +51,7 @@ class Queue {
             } else {
                 document.getElementById("queue-empty-prompt").style.display = "block";
             }
+            this.configureWebSocket();
         } else {
             document.getElementById("error-alert").style.display = "block";
         }
@@ -194,6 +206,30 @@ class Queue {
         }
     }
 
+    // WebSocket config
+    configureWebSocket() {
+        const protocol = window.location.protocol === "http:" ? "ws" : "wss";
+        this.socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+        this.socket.onopen = (event) => {
+            this.displayMessage("system", "System", "Connected to chat");
+            this.socketActive = true;
+          };
+          this.socket.onclose = (event) => {
+            // TODO
+            this.socket = false;
+          };
+          this.socket.onmessage = async (event) => {
+            // TODO
+          };
+    }
+
+    displayMessage(eventType, username, message) {
+        const newMessageEl = document.createElement("p");
+        newMessageEl.setAttribute("class", eventType);
+        newMessageEl.innerText = `${username}: ${message}`;
+        
+        document.getElementById("chat-box").appendChild(newMessageEl);
+    }
 }
 
 let queue = new Queue();

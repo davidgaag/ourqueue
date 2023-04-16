@@ -31,7 +31,8 @@
         <main class="container-fluid bg-secondary">
             <div>
                 <h1 id="queue-title">'s Queue</h1>
-                <p id="queue-empty-prompt" class="p-1 fs-5" style="display: none">Fill the form below and click the button
+                <p id="queue-empty-prompt" class="p-1 fs-5" style="display: none">Fill the form below and click the
+                    button
                     to add a song!</p>
             </div>
 
@@ -65,23 +66,22 @@
                     queue</button>
                 <input id="invitee-username" type="text" class="form-text" placeholder="Invitee username" required>
                 <div>
-                    <button type="button" class="btn btn-primary" onclick="queue.inviteUser()">Add user to queue</button>
-                    <button type="button" class="btn btn-danger" onclick="queue.uninviteUser()">Remove user from queue</button>
+                    <button type="button" class="btn btn-primary" onclick="queue.inviteUser()">Add user to
+                        queue</button>
+                    <button type="button" class="btn btn-danger" onclick="queue.uninviteUser()">Remove user from
+                        queue</button>
                 </div>
             </div>
 
-            <button id="clear-queue" type="button" class="btn btn-danger mt-1" onclick="queue.clearQueue()" style="display: none">Clear Queue</button>
+            <button id="clear-queue" type="button" class="btn btn-danger mt-1" onclick="queue.clearQueue()"
+                style="display: none">Clear Queue</button>
 
             <div id="chat-container" class="container-fluid mb-3">
                 <h3>Chat</h3>
-                <div id="chat-box" class="bg-white rounded p-2 overflow-scroll">
-                    <p>Message 1</p>
-                    <p>Message 2</p>
-                    <p>Message 3</p>
-                    <p>Message 4</p>
-                    <p>Message 5</p>
-                    <p>Message 6</p>
+                <div id="chat-box" class="bg-white rounded-top p-2 overflow-scroll">
                 </div>
+                <input id="chat-message-input" type="text" class="container-fluid rounded-bottom border border"
+                    placeholder="Message" required></input>
             </div>
         </main>
 

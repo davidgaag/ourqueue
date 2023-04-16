@@ -2806,4 +2806,5 @@ Server:
   - on close, remove the connection from the array using the ID
 - wss = secure, ws = not secure (HTTPS vs HTTP)
 - `wss.emit("event"...)` allows custom events to be sent to client, client receives using `socket.on("event", function...)`
- 
+- `socket.onopen = (event) => {...}` is the same as adding an event listener for "open"  
+  - also: `onclose`, `onmessage`
