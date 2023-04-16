@@ -2795,3 +2795,15 @@ Server:
 - `?.` optional chaining: access object's property or call a function, but if property or function is undefined or null, the expression will evaulatue to undefined instead of throwing an error
 - You don't need Live Server once you have the Express server set up, even locally. Express will serve up the files
 - Flex only applies to direct children (I may have known this, but forgot)
+- `httpOnly` cookies means the cookie can only be removed by the server, e.g. when the user clicks a log out button and sends a request to the server to remove the cookie
+  - May need to look more into how to implement auth cookies and how they relate to sessions. E.g. should user have to log in again if quit app? After timeout?
+
+## Simon Websocket Notes
+- organization: separate file for webwocket
+- only config in index.js needed is `peerProxy(httpService)` (which requires setting the `app.listen` to a variable, in this example `httpService`)
+  - since we're using an express server, we'll use `noServer` when creating websocket server object
+- on connection event is where you'll want to set session IDs and add it to the array of connections
+  - on close, remove the connection from the array using the ID
+- wss = secure, ws = not secure (HTTPS vs HTTP)
+- `wss.emit("event"...)` allows custom events to be sent to client, client receives using `socket.on("event", function...)`
+ 
