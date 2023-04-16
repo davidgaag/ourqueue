@@ -232,10 +232,10 @@ class Queue {
             const parsedEvent = JSON.parse(await event.data.text());
             switch (parsedEvent?.eventType) {
                 case "song":
-                    this.addSongToDom(parsedEvent.songTitle)
+                    //this.addSongToDom(parsedEvent.songTitle)
                     break;
                 case "clear":
-                    this.clearQueueElements();
+                    //this.clearQueueElements();
                     break;
                 case "message":
                     this.displayMessage(parsedEvent.username, parsedEvent.message);
