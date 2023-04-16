@@ -14,11 +14,18 @@ class Queue {
 
         const messageInputEl = document.getElementById("chat-message-input");
         messageInputEl.addEventListener("keydown", (event) => {
-            if (this.socketActive && event.key === "Enter" ) {
+            if (this.socketActive && messageInputEl.value && event.key === "Enter") {
+                this.displayMessage(this.currUsername, messageInputEl.value);
+                this.broadcastEvent("message", this.currUsername, messageInputEl.value);
                 messageInputEl.value = "";
-                // TODO
             }
         });
+    }
+
+    getNextSongId() {
+        const nextSongId = "song" + this.nextSongNumber;
+        this.nextSongNumber++;
+        return nextSongId;
     }
 
     // Gets current users' songs from the database
@@ -59,8 +66,7 @@ class Queue {
 
     addSongsFromRemote(songs) {
         for (const [i, song] of songs.entries()) {
-            this.addSongToDom(song.songTitle, song.artistName, "song" + this.nextSongNumber);
-            this.nextSongNumber++;
+            this.addSongToDom(song.songTitle, song.artistName, this.getNextSongId());
         }
     }
 
@@ -82,8 +88,7 @@ class Queue {
             songTitleEl.value = "";
             artistNameEl.value = "";
 
-            const newSongId = "song" + this.nextSongNumber;
-            this.nextSongNumber++;
+            const newSongId = this.getNextSongId();
             this.addSongToDom(songTitle, artistName, newSongId);
             document.getElementById("queue-empty-prompt").style.display = "none";
             fetch(`/api/queue/${username}/addSong`, {
@@ -198,12 +203,17 @@ class Queue {
             method: "delete",
         });
         if (response.status >= 200 && response.status <= 300) {
-            let queue = document.getElementById("queue-list");
+            clearQueueElements();
+            this.broadcastEvent("clear", "", "");
+        }
+    }
+
+    clearQueueElements() {
+        let queue = document.getElementById("queue-list");
             while (queue.firstChild) {
                 queue.removeChild(queue.firstChild);
             }
             document.getElementById("queue-empty-prompt").style.display = "block";
-        }
     }
 
     // WebSocket config
@@ -211,24 +221,46 @@ class Queue {
         const protocol = window.location.protocol === "http:" ? "ws" : "wss";
         this.socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
         this.socket.onopen = (event) => {
-            this.displayMessage("system", "System", "Connected to chat");
+            this.displayMessage("System", "Connected to chat");
             this.socketActive = true;
-          };
-          this.socket.onclose = (event) => {
-            // TODO
+        };
+        this.socket.onclose = (event) => {
+            this.displayMessage("System", "Disconnected from chat");
             this.socket = false;
-          };
-          this.socket.onmessage = async (event) => {
-            // TODO
-          };
+        };
+        this.socket.onmessage = async (event) => {
+            const parsedEvent = JSON.parse(await event.data.text());
+            switch (parsedEvent?.eventType) {
+                case "song":
+                    this.addSongToDom(parsedEvent.songTitle)
+                    break;
+                case "clear":
+                    this.clearQueueElements();
+                    break;
+                case "message":
+                    this.displayMessage(parsedEvent.username, parsedEvent.message);
+                    break;
+            }
+        };
     }
 
-    displayMessage(eventType, username, message) {
+    displayMessage(username, message) {
         const newMessageEl = document.createElement("p");
-        newMessageEl.setAttribute("class", eventType);
+        // newMessageEl.setAttribute("class", eventType);
         newMessageEl.innerText = `${username}: ${message}`;
-        
-        document.getElementById("chat-box").appendChild(newMessageEl);
+
+        const chatBoxEl = document.getElementById("chat-box");
+        chatBoxEl.appendChild(newMessageEl);
+        chatBoxEl.scrollTop = chatBoxEl.scrollHeight;
+    }
+
+    broadcastEvent(eventType, username, message) {
+        const data = {
+            eventType: eventType,
+            username: username,
+            message: message
+        };
+        this.socket.send(JSON.stringify(data));
     }
 }
 
