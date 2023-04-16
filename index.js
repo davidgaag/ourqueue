@@ -30,7 +30,7 @@ apiRouter.post("/auth/register", async (req, res) => {
       res.status(409).send({ msg: "Existing user" });
    } else {
       const user = await db.registerUser(req.body.username, req.body.password);
-      
+
       setAuthCookie(res, user.token);
 
       // Sends the HTTP response with the body containing the user ID

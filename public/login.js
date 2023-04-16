@@ -8,6 +8,10 @@
         authenticated = user?.authenticated;
     }
 
+    const quoteResponse = await fetch("https://api.quotable.io/random");
+    const quote = await quoteResponse.json();
+    document.getElementById("quote").innerText = quote?.content + " - " + quote?.author;
+
     setDisplay("load-animation", "none");
 
     if (authenticated) {

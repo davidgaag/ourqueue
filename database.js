@@ -6,6 +6,8 @@ const username = process.env.MONGOUSER_STARTUP;
 const password = process.env.MONGOPASSWORD_STARTUP;
 const hostName = process.env.MONGOHOSTNAME_STARTUP;
 
+console.log(username);
+
 if (!username) {
    throw Error("Database not configured. Set environment variables")
 

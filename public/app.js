@@ -210,10 +210,10 @@ class Queue {
 
     clearQueueElements() {
         let queue = document.getElementById("queue-list");
-            while (queue.firstChild) {
-                queue.removeChild(queue.firstChild);
-            }
-            document.getElementById("queue-empty-prompt").style.display = "block";
+        while (queue.firstChild) {
+            queue.removeChild(queue.firstChild);
+        }
+        document.getElementById("queue-empty-prompt").style.display = "block";
     }
 
     // WebSocket config
