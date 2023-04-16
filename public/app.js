@@ -32,8 +32,8 @@ class Queue {
     async loadMyQueue() {
         const response = await fetch(`/api/queue/` + this.currUsername);
         let songs = await response.json();
-        if (songs) {
-            document.getElementById("load-animation").style.display = "none";
+        document.getElementById("load-animation").style.display = "none";
+        if (songs.length > 0) {
             this.addSongsFromRemote(songs);
         } else {
             document.getElementById("queue-empty-prompt").style.display = "block";
@@ -47,12 +47,12 @@ class Queue {
         const username = document.getElementById("username-input").value;
         const response = await fetch(`/api/queue/` + username);
         if (response.status === 200) {
+            document.getElementById("join-controls").style.display = "none";
             this.currQueueOwnerUsername = username;
             let songs = await response.json();
             if (songs.length) {
                 this.addSongsFromRemote(songs);
                 document.getElementById("queue-title").innerText = username + "'s Queue";
-                document.getElementById("join-controls").style.display = "none";
                 document.getElementById("song-information-container").style.display = "flex";
                 document.getElementById("clear-queue").style.display = "block";
             } else {
