@@ -2808,3 +2808,315 @@ Server:
 - `wss.emit("event"...)` allows custom events to be sent to client, client receives using `socket.on("event", function...)`
 - `socket.onopen = (event) => {...}` is the same as adding an event listener for "open"  
   - also: `onclose`, `onmessage`
+
+# Web Frameworks
+- make web dev easier
+- tools for common app tasks, e.g. modularize code, single page apps, simplify reactivity, support diverse hardware devices
+- may make new file formats that combine HTML, CSS, JS
+- Examples:
+  - Vue
+  - Svelte
+  - React
+  - React
+  - Angular component
+
+## React
+- Originally for Facebook, by Jordan Walke
+- HTML abstracted to JS variate called JSX, converted to valid HTML and JavaScript using preprocessor Babel
+- React will monitor for changes to data and update things (see below notes)
+### Components
+- modularize functionality of app
+- code directly represents components user interacts with  
+
+#### Render Function
+- `render` generates user interface  
+JSX
+```jsx
+<div>
+  Component: <Demo />
+</div>
+```
+**REACT COMPONENT**
+```js
+function Demo() {
+  const who = 'world';
+  return <b>Hello {who}</b>;
+}
+```
+**RESULT**
+```html
+<div>Component: <b>Hello world</b></p>
+
+```
+#### Properties  
+- pass in information into components
+```jsx
+<div>Component: <Demo who="Walke" /><div>
+```
+```js
+function Demo(props) {
+  return <b>Hello {props.who}</b>;
+}
+```
+```html
+<div>Component: <b>Hello Walke</b></div>
+```
+#### State
+- component can have internal state
+- `React.useState` hook function
+- `useState` returns variable that contains current state and function to update state
+- E.g.: create `clicked` stat variable, toggles click state in `updateClicked` function when paragraph is clicked
+```jsx
+const Clicker = () => {
+  const [clicked, updateClicked] = React.useState(false);
+
+  const onClicked = (e) => {
+    updateClicked(!clicked);
+  };
+
+  return <p onClick={(e) => onClicked(e)}>clicked: {`${clicked}`}</p>;
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Clicker />);
+```
+- can use JSX without function, simple variable representing JSX will work anywhere you would otherwise provide a component
+```jsx
+const hello = <div>Hello</div>;
+
+ReactDOM.render(hello, document.getElementById('root'));
+```
+#### Class style components
+- `function style` above, `class style` in this section
+- class style being moved away from by React team, probably don't use it
+```jsx
+class Clicker extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      clicked: false,
+    };
+  }
+  onClicked() {
+    this.setState({
+      clicked: !this.state.clicked,
+    });
+  }
+  render() {
+    return <p onClick={(e) => this.onClicked(e)}>clicked: {`${this.state.clicked}`}</p>;
+  }
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Clicker />);
+```
+#### Reactivity
+- component's properties and state used by React framework to determine reactivity of UI
+- reactivity controls how component reacts to actions taken by user or events within app
+- whenever component's state or properties change, render fucntion for the component and all of its dependent component render functions are called
+### Reactivity
+- Components: `props`, `state`, `render`
+- JSX rendered > React parses, lists referemces to `state` or `prop` objects > monitors objects, if detect change > call `render` to visualize changes
+- parent component can pass property to child component, and update to parent property will also update child property
+- `updateState` happens async, so don't assume you can access the updated state on the next line of code
+- `event.target` refers to the element that the event listener was attached to. e.g. if we attached an event to this div `<div id="foo"></div>` in JavaScript, `event.target.id` would be "foo"
+### Tic-tac-toe
+- "lift state up" - lift state from a component to a higher component for children to communicate between each other or to collect data from multiple children
+  - parent can later pass state down to children via props
+- if parent re-renders, so will children
+- re-render happens on state change
+### React Hooks
+- only in function style components
+  - can't be called in loop or conditional, ensures hooks always called in same order when component is rendered
+- `useState`, for one
+#### `useEffect`
+- allows representation of lifecycle events
+- e.g. every time component completes render
+```jsx
+React.useEffect(() => {
+  console.log('rendered');
+});
+```
+- on component `cleanup` (below)
+  - useful for tracking when component displayed/hidden, or creating and disposing of resources
+```jsx
+React.useEffect(() => {
+  console.log('rendered');
+
+  return function cleanup() {
+    console.log('cleanup');
+  };
+});
+```
+#### Hook dependencies
+- control what triggers a `useEffect` hook by specifying its dependencies
+- below: `useEffect` only called when component is initially called and when the first variable is clicked
+  - array of dependencies is second param in `useEffect`
+  - if array is empty `[]`, the hook is only called when component is first rendered
+```jsx
+function UseEffectHookDemo() {
+  const [count1, updateCount1] = React.useState(0);
+  const [count2, updateCount2] = React.useState(0);
+
+  React.useEffect(() => {
+    console.log(`count1 effect triggered ${count1}`);
+  }, [count1]); {/* <-- dependency array */}
+
+  return (
+    <ol>
+      <li onClick={() => updateCount1(count1 + 1)}>Item 1 - {count1}</li>
+      <li onClick={() => updateCount2(count2 + 1)}>Item 2 - {count2}</li>
+    </ol>
+  );
+}
+
+ReactDOM.render(<UseEffectHookDemo />, document.getElementById('root'));
+```
+## Toolchains
+Including:
+- **Code repository** - Stores code in a shared, versioned, location.
+- **Linter** - Removes, or warns, of non-idiomatic code usage.
+- **Prettier** - Formats code according to a shared standard.
+- **Transpiler** - Compiles code into a different format. For example, from JSX to JavaScript.
+- **Polyfill** - Generates backward compatible code for supporting old browser versions that do not support the latest standards.
+- **Bundler** - Packages code into bundles for delivery to the browser. This enables compatibility (for example with ES6 module support), or performance (with lazy loading).
+- **Minifier** - Removes whitespace and renames variables in order to make code smaller and more efficient to deploy.
+- **Testing** - Automated tests at multiple levels to ensure correctness.
+- **Deployment** - Automated packaging and delivery of code from the development environment to the production environment.  
+- We use:
+  - GitHub - code repo
+  - Babel - transpiling
+  - WebPack - polyfill, bundling, minifying
+  - bash script - deployment
+## React CLI
+  - CLI: Command Line Iterface
+  - useful to set up project, implement toolchains
+  - runs from console
+  - we'll use `create-react-app` CLI
+  - `npx` is like installing and starting an app, but package doesn't persist, leaving less/no clutter
+  - `npx create-react-app test-react` command
+  - `npm start` to start debug
+### Generated project
+| Directory | File               | Purpose                                                      |
+| --------- | ------------------ | ------------------------------------------------------------ |
+| ./        | .gitignore         | Specifies files to not include in your Git commits           |
+|           | package-json       | NPM definition for included packages and script commands     |
+|           | package-lock.json  | Version constraints for included packages (do not edit this) |
+|           | README.md          | GitHub readme for the project                                |
+| ./public  | index.html         | Primary page for the application                             |
+|           | favicon.ico        | Primary application icon                                     |
+|           | logo\*.png         | Icons used for mobile devices                                |
+|           | manifest.json      | Configuration for use on mobile devices (PWA support)        |
+|           | robots.txt         | Directives for search engine crawlers like Google            |
+| ./src     | index.js           | Entry point for code execution                               |
+|           | index.css          | CSS for top level component                                  |
+|           | App.css            | CSS for the main application component                       |
+|           | App.js             | JavaScript for the main application component                |
+|           | App.test.js        | Automated tests for the main application component           |
+|           | logo.svg           | Image displayed in the main application component            |
+|           | reportWebVitals.js | Configuration for reporting application performance          |
+|           | setupTests.js      | Set up for automated tests                                   |  
+
+- `npm start` executes start script in `package.json` under `"scripts"`
+  - in our case, uses `react-scripts`, another NPM CLI package
+- `npm run build` executes build script in `package.json`
+  - for production build
+
+## React Router
+- Using react-router-dom v6
+- `npm install react-router-dom`   
+
+### 1. React Router Basics
+#### Config
+- `import { BrowserRouter } from "react-router-dom"` for web, `NativeRouter` for mobile
+```jsx
+import React from "react"
+import ReactDOM from "react-dom/client"
+import App from "./App"
+import { BrowserRouter } from "react-router-dom"
+
+const root = ReactDOM.createRoot(document.getElementById("root"))
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+)
+```
+#### Defining Routes
+- generally, top level, such as in `App` component
+- `Route` comp within `Routes` comp
+```jsx
+import { Route, Routes } from "react-router-dom"
+import { Home } from "./Home"
+import { BookList } from "./BookList"
+
+export function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/books" element={<BookList />} />
+    </Routes>
+  )
+}
+```
+#### Handling Navigation
+- normally in app, use anchor tags
+- react router, however: `Link` component to handle nav
+  - wrapper around anchor that ensures routing and conditional re-rendering is handled properly, use like normal anchor tag
+- in below example, nav is outside of `Routes` component and therefore won't re-render
+```jsx
+import { Route, Routes, Link } from "react-router-dom"
+import { Home } from "./Home"
+import { BookList } from "./BookList"
+
+export function App() {
+  return (
+    <>
+      <nav>
+        <ul>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/books">Books</Link></li>
+        </ul>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/books" element={<BookList />} />
+      </Routes>
+    </>
+  )
+}
+```
+
+
+- For navigating (note: useNavigate hook has to be outside of function, but inside a component descending from Router):
+```jsx
+const navigate = useNavigate();
+function foo() {
+  navigate("/path");
+}
+```
+
+TODO: More notes for React Router
+
+## Simon React notes
+- `*` path in Route matches all URLs, but React will choose the most specifc, so if you have a path matches, it won't trigger this one
+  - Good for a NotFound page
+- can still use our Express endpoints, we're just making our frontend REST now
+- will need to convert Bootstrap to React Bootstrap
+- useEffect hook to run whenever username changes will help with authentication
+- NavLink will show active if URL matches path
+- for debug, need two HTTP servers running: one for Node web service in express, other for React client HTTP debugger
+  - `.env.local` in root of project, add `PORT=3001`
+  - modify `package.json` to include field `"proxy": "http://localhost:3000"`
+    - this tells React HTTP debugger: if request made for service endpoin, forward to port 3000, where node server is listening
+  - change WebSocket frontend to use 3000 instead of 3001
+  ```js
+  let port = window.location.port;
+  if (process.env.NODE_ENV !== 'production') {
+    port = 3000;
+  }
+  ```
+  
