@@ -3098,9 +3098,6 @@ function foo() {
   navigate("/path");
 }
 ```
-
-TODO: More notes for React Router
-
 ## Simon React notes
 - `*` path in Route matches all URLs, but React will choose the most specifc, so if you have a path matches, it won't trigger this one
   - Good for a NotFound page

@@ -100,7 +100,6 @@ queueSecurityRouter.get("/", async (req, res) => {
 });
 
 // Delete queue by ID
-// FIXME: clears user's own queue, when should clear the queue of the connected user
 queueSecurityRouter.delete("/clearQueue", async (req, res) => {
    if (db.clearQueue(req.params.queueOwner)) {
       const webSocketData = {
