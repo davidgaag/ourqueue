@@ -20,12 +20,12 @@ const userCollection = client.db("ourqueue").collection("user");
 const queueCollection = client.db("ourqueue").collection("queue");
 const queueAuthorizationsCollection = client.db("ourqueue").collection("queueAuthorizations");
 
-function getUser(username) {
-   return userCollection.findOne({ username: username });
+async function getUser(username) {
+   return await userCollection.findOne({ username: username });
 }
 
-function getUserByAuthToken(authToken) {
-   return userCollection.findOne({ token: authToken });
+async function getUserByAuthToken(authToken) {
+   return await userCollection.findOne({ token: authToken });
 }
 
 async function registerUser(username, password) {
@@ -42,7 +42,7 @@ async function registerUser(username, password) {
    return user;
 }
 
-function addSong(songTitle, artistName, queueOwner) {
+async function addSong(songTitle, artistName, queueOwner) {
    const song = {
       _id: uuid.v4(),
       queueOwner: queueOwner,
@@ -50,7 +50,7 @@ function addSong(songTitle, artistName, queueOwner) {
       artistName: artistName,
    }
 
-   queueCollection.insertOne(song);
+   await queueCollection.insertOne(song);
    return song._id;
 }
 
@@ -85,6 +85,10 @@ async function checkQueueAuthorization(username, queueOwner) {
    return await queueAuthorizationsCollection.findOne({ username: username, queueOwner: queueOwner });
 }
 
+async function getListOfAuthorizedUsers(queueOwner) {
+   return await queueAuthorizationsCollection.find({ queueOwner: queueOwner }).toArray();
+}
+
 module.exports = {
    getUser,
    getUserByAuthToken,
@@ -94,5 +98,6 @@ module.exports = {
    clearQueue,
    addQueueAuthorization,
    removeQueueAuthorization,
-   checkQueueAuthorization
+   checkQueueAuthorization,
+   getListOfAuthorizedUsers
 }

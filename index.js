@@ -26,7 +26,9 @@ app.use(`/api`, apiRouter);
 apiRouter.post("/auth/register", async (req, res) => {
    // Validate username input
    const validUsername = /^[a-zA-Z0-9]+$/.test(req.body.username);
-   if (!validUsername || await db.getUser(req.body.username)) {
+   if (!validUsername) {
+      res.status(403).send({ msg: "Invalid username. Username must contain only alphanumeric characters" });
+   } else if (await db.getUser(req.body.username)) {
       res.status(409).send({ msg: "Existing user" });
    } else {
       const user = await db.registerUser(req.body.username, req.body.password);
@@ -76,9 +78,15 @@ apiRouter.use(`/queue/:queueOwner`, queueSecurityRouter);
 
 // Authentication middleware for queues
 queueSecurityRouter.use(async (req, res, next) => {
-   authToken = req.cookies[authCookieName];
+   const authToken = req.cookies[authCookieName];
    const user = await db.getUserByAuthToken(authToken);
    if (user?.username === req.params.queueOwner || await db.checkQueueAuthorization(user?.username, req.params.queueOwner)) {
+      const queueUsers = await db.getListOfAuthorizedUsers(req.params.queueOwner);
+      let wsRecipientUsernames = queueUsers.map((user) => user.username);
+      wsRecipientUsernames.push(req.params.queueOwner);
+      wsRecipientUsernames = wsRecipientUsernames.filter((username) => username !== user.username);
+      req.wsRecipientUsernames = wsRecipientUsernames;
+
       next();
    } else {
       res.status(401).send({ msg: "Unauthorized" });
@@ -92,8 +100,15 @@ queueSecurityRouter.get("/", async (req, res) => {
 });
 
 // Delete queue by ID
+// FIXME: clears user's own queue, when should clear the queue of the connected user
 queueSecurityRouter.delete("/clearQueue", async (req, res) => {
    if (db.clearQueue(req.params.queueOwner)) {
+      const webSocketData = {
+         eventType: "clear"
+      }
+
+      peerProxy.sendEvent(req.wsRecipientUsernames, req.params.queueOwner, webSocketData);
+
       res.status(200).send();
    } else {
       res.status(404).send({ msg: "Could not find a queue with that ID" });
@@ -103,12 +118,22 @@ queueSecurityRouter.delete("/clearQueue", async (req, res) => {
 // Add song to a queue
 queueSecurityRouter.post("/addSong", async (req, res) => {
    const songId = await db.addSong(req.body.songTitle, req.body.artistName, req.body.queueOwner);
+
+   const webSocketData = {
+      eventType: "song",
+      songTitle: req.body.songTitle,
+      artistName: req.body.artistName
+   }
+   peerProxy.sendEvent(req.wsRecipientUsernames, req.params.queueOwner, webSocketData);
+
    res.status(204).send({ songId: songId });
 });
 
 // Add permission for a user to join a queue
 queueSecurityRouter.post("/inviteUser/:username", (req, res) => {
-   db.addQueueAuthorization(req.params.username, req.params.queueOwner);
+   if (req.params.username !== req.params.queueOwner) {
+      db.addQueueAuthorization(req.params.username, req.params.queueOwner);
+   }
    res.status(204).send();
 });
 

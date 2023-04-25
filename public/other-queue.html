@@ -35,8 +35,8 @@
                 <p id="join-queue-prompt" class="p-1 fs-5">Enter the username of the user whose queue you'd like to
                     join:</p>
                 <div id="join-controls">
-                    <input id="username-input" type="text" class="form-text" placeholder="Username"></input>
-                    <button class="btn btn-primary" onclick="queue.loadOtherQueue()">Connect</button>
+                    <input id="username-input" type="text" class="form-text" placeholder="Username" required></input>
+                    <button id="connect-button" class="btn btn-primary" onclick="queue.loadOtherQueue()">Connect</button>
                     <div id="error-alert" class="alert alert-warning mt-3" style="display: none">You do not have
                         permission to join this queue</div>
                 </div>
@@ -76,7 +76,7 @@
                 style="display: none">Clear Queue</button>
 
             <div id="chat-container" class="container-fluid mb-3">
-                <h3>Global Chat (Eventually will be queue-specific)</h3>
+                <h3>Chat</h3>
                 <div id="chat-box" class="bg-white rounded-top ps-2 pt-2 pb-0 overflow-scroll">
                 </div>
                 <input id="chat-message-input" type="text" class="container-fluid rounded-bottom border border"

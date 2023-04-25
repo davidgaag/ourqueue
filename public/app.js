@@ -31,6 +31,7 @@ class Queue {
     // Gets current users' songs from the database
     async loadMyQueue() {
         const response = await fetch(`/api/queue/` + this.currUsername);
+        this.currQueueOwnerUsername = this.currUsername;
         let songs = await response.json();
         document.getElementById("load-animation").style.display = "none";
         if (songs.length > 0) {
@@ -40,29 +41,37 @@ class Queue {
         }
         document.getElementById("song-information-container").style.display = "flex";
         document.getElementById("clear-queue").style.display = "block";
-        this.configureWebSocket();
+        this.configureWebSocket(this.currUsername);
     }
 
     async loadOtherQueue() {
-        const username = document.getElementById("username-input").value;
-        const response = await fetch(`/api/queue/` + username);
-        if (response.status === 200) {
-            document.getElementById("join-controls").style.display = "none";
-            document.getElementById("join-queue-prompt").style.display = "none";
-            document.getElementById("song-information-container").style.display = "flex";
-            document.getElementById("queue-title").innerText = username + "'s Queue";
-            document.getElementById("clear-queue").style.display = "block";
-            this.currQueueOwnerUsername = username;
-            let songs = await response.json();
-            if (songs.length) {
-                this.addSongsFromRemote(songs);
-            } else {
-                document.getElementById("queue-empty-prompt").style.display = "block";
-            }
-            this.configureWebSocket();
+        const connectButtonEl = document.getElementById("connect-button");
+        connectButtonEl.disabled = true;
+        const usernameInputEl = document.getElementById("username-input");
+        const username = usernameInputEl.value;
+        if (username === "") {
+            usernameInputEl.reportValidity();
         } else {
-            document.getElementById("error-alert").style.display = "block";
+            const response = await fetch(`/api/queue/` + username);
+            if (response.status === 200) {
+                document.getElementById("join-controls").style.display = "none";
+                document.getElementById("join-queue-prompt").style.display = "none";
+                document.getElementById("song-information-container").style.display = "flex";
+                document.getElementById("queue-title").innerText = username + "'s Queue";
+                document.getElementById("clear-queue").style.display = "block";
+                this.currQueueOwnerUsername = username;
+                let songs = await response.json();
+                if (songs.length) {
+                    this.addSongsFromRemote(songs);
+                } else {
+                    document.getElementById("queue-empty-prompt").style.display = "block";
+                }
+                this.configureWebSocket(username);
+            } else {
+                document.getElementById("error-alert").style.display = "block";
+            }
         }
+        connectButtonEl.disabled = false;
     }
 
     addSongsFromRemote(songs) {
@@ -200,12 +209,11 @@ class Queue {
     }
 
     async clearQueue() {
-        const response = await fetch(`/api/queue/${this.currUsername}/clearQueue`, {
+        const response = await fetch(`/api/queue/${this.currQueueOwnerUsername}/clearQueue`, {
             method: "delete",
         });
         if (response.status >= 200 && response.status <= 300) {
-            clearQueueElements();
-            this.broadcastEvent("clear", "", "");
+            this.clearQueueElements();
         }
     }
 
@@ -218,10 +226,11 @@ class Queue {
     }
 
     // WebSocket config
-    configureWebSocket() {
+    async configureWebSocket(queueOwnerUsername) {
         const protocol = window.location.protocol === "http:" ? "ws" : "wss";
-        this.socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+        this.socket = new WebSocket(`${protocol}://${window.location.host}/${queueOwnerUsername}`); // TODO
         this.socket.onopen = (event) => {
+            this.broadcastEvent("setQueueOwner", queueOwnerUsername);
             this.displayMessage("System", "Connected to chat");
             this.socketActive = true;
         };
@@ -230,17 +239,19 @@ class Queue {
             this.socket = false;
         };
         this.socket.onmessage = async (event) => {
-            const parsedEvent = JSON.parse(await event.data.text());
+            const parsedEvent = await JSON.parse(event.data);
             switch (parsedEvent?.eventType) {
                 case "song":
-                    //this.addSongToDom(parsedEvent.songTitle)
+                    this.addSongToDom(parsedEvent.songTitle, parsedEvent.artistName);
                     break;
                 case "clear":
-                    //this.clearQueueElements();
+                    this.clearQueueElements();
                     break;
                 case "message":
                     this.displayMessage(parsedEvent.username, parsedEvent.message);
                     break;
+                // TODO: case "upvote":
+                // TODO: case "downvote":
             }
         };
     }
